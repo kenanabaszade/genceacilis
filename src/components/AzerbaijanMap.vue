@@ -18,15 +18,20 @@
       <!-- Left side - Map -->
       <div class="map-section">
         <div class="map-container">
-          <!-- Back button when viewing region detail -->
-          <div v-if="selectedRegion" class="map-back-button">
-            <button class="back-button" @click="closeRegionModal">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M19 12H5M12 19L5 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-              Geri qayıt
+          <!-- Control Buttons - Only show when viewing individual regions -->
+          <div v-if="selectedRegion" class="control-buttons">
+            <button class="control-btn left-btn" @click="handleLeftClick">
+              <img src="/icons/leftarrow.svg" alt="Left" class="control-icon" />
             </button>
-            <h2 class="region-title">{{ getRegionName(selectedRegion) }}</h2>
+            <button class="control-btn right-btn" @click="handleRightClick">
+              <img src="/icons/rightarrow.svg" alt="Right" class="control-icon" />
+            </button>
+            <button class="control-btn map-btn" @click="handleMapClick">
+              <img src="/icons/mapicon.svg" alt="Map" class="control-icon" />
+            </button>
+            <button class="control-btn back-btn" @click="closeRegionModal">
+              <img src="/icons/leftarrowwithbg.svg" alt="Back" class="control-icon" />
+            </button>
           </div>
           
           <!-- Main Azerbaijan Map -->
@@ -343,6 +348,21 @@ const handleMapClick = (event) => {
   }
 }
 
+const handleLeftClick = () => {
+  // Handle left arrow click
+  console.log('Left arrow clicked')
+}
+
+const handleRightClick = () => {
+  // Handle right arrow click
+  console.log('Right arrow clicked')
+}
+
+const handleMapButtonClick = () => {
+  // Handle map button click
+  console.log('Map button clicked')
+}
+
 const closeRegionModal = () => {
   selectedRegion.value = null
 }
@@ -592,47 +612,45 @@ onMounted(() => {
   transition: all 0.5s ease;
 }
 
-/* Back Button and Region Title */
-.map-back-button {
+/* Control Buttons */
+.control-buttons {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
+  top: 20px;
+  left: 20px;
   z-index: 10;
-  display: flex;
-  align-items: center;
-  padding: 16px 24px;
-  background: linear-gradient(135deg, #31B1F0 0%, #5289C8 100%);
-  color: white;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  border-radius: 12px 12px 0 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 8px;
+  width: 120px;
+  height: 120px;
 }
 
-.back-button {
+.control-btn {
   display: flex;
   align-items: center;
-  gap: 8px;
-  background: rgba(255, 255, 255, 0.2);
-  border: none;
-  color: white;
-  padding: 10px 14px;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
   border-radius: 8px;
   cursor: pointer;
-  font-family: 'Montserrat', sans-serif;
-  font-weight: 600;
-  font-size: 14px;
+  border: none;
+  background: none;
   transition: all 0.3s ease;
-  backdrop-filter: blur(10px);
 }
 
-.back-button:hover {
-  background: rgba(255, 255, 255, 0.3);
-  transform: translateX(-2px);
+.control-btn:hover {
+  transform: translateY(-2px);
 }
 
-.back-button svg {
-  width: 18px;
-  height: 18px;
+.control-icon {
+  width: 60px;
+  height: 60px;
+}
+
+/* Special styling for the back button (bottom-right) */
+.back-btn {
+  border: none !important;
 }
 
 .region-title {
@@ -645,26 +663,14 @@ onMounted(() => {
 
 /* Region Detail Container */
 .region-detail-container {
-  width: 100%;
+  width: 50%;
+  margin: 0 auto;
   height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 20px;
-  background: #F8FAFC;
   border-radius: 12px;
   animation: fadeIn 0.5s ease-out;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
 }
 
 .region-detail-image {
@@ -672,12 +678,7 @@ onMounted(() => {
   max-height: 100%;
   object-fit: contain;
   border-radius: 12px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease;
-}
-
-.region-detail-image:hover {
-  transform: scale(1.02);
 }
 
 .region-tooltip {
