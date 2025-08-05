@@ -1,0 +1,40 @@
+{
+  "butunBolgelerUzre": {
+    "total": 200,
+    "regions": [
+      { "name": "Bakı RETSİ", "count": 114 },
+      { "name": "Sumqayıt RETSİ", "count": 7 },
+      { "name": "Xaçmaz RETSİ", "count": 13 },
+      { "name": "Şirvan RETSİ", "count": 13 },
+      { "name": "Şimal Qərb RETSİ", "count": 13 },
+      { "name": "Qərb RETSİ", "count": 10 },
+      { "name": "Mərkəzi Aran RETSİ", "count": 8 },
+      { "name": "Aran RETSİ", "count": 1 },
+      { "name": "Qarabağ RETSİ", "count": 6 },
+      { "name": "Naxçıvan RETSİ", "count": 2 },
+      { "name": "Cənub RETSİ", "count": 11 }
+    ]
+  },
+  "yarimstansiyalarUzreArtim": {
+    "powerIncrease": 250,
+    "population": 14500,
+    "nonPopulation": 8501,
+    "other": 5,
+    "edcTotal": 435,
+    "edcBreakdown": [
+      { "name": "Bakı RETSİ", "percentage": 70, "color": "#3B82F6" },
+      { "name": "Qarabağ RETSİ", "percentage": 25, "color": "#10B981" },
+      { "name": "Digər RETSİLƏR", "percentage": 5, "color": "#60A5FA" }
+    ]
+  },
+  "elektrikDoldurmaCihazi": {
+    "nationwide": 50.5,
+    "bakuCity": 43.5,
+    "karabakhIR": 1.0,
+    "otherIR": 6.1,
+    "ratio": {
+      "otherOrganizations": 74,
+      "azerishiqASC": 26
+    }
+  }
+} 
