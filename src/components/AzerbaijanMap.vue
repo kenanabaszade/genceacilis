@@ -41,7 +41,19 @@
          
           
           <!-- Main Azerbaijan Map -->
-          <svg v-if="!selectedRegion" id="Layer_2" data-name="Layer 2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1046.41 834.24" @click="handleMapClick" class="main-map">
+          <svg v-if="!selectedRegion" 
+               id="Layer_2" 
+               data-name="Layer 2" 
+               xmlns="http://www.w3.org/2000/svg" 
+               viewBox="0 0 1046.41 834.24" 
+               @click="handleMapClick" 
+               class="main-map"
+               :style="{
+                 transform: `translate3d(${zoomTransform.translateX}px, ${zoomTransform.translateY}px, 0) scale(${zoomTransform.scale})`,
+                 transformOrigin: 'center',
+                 transition: 'transform 3s cubic-bezier(0.68, -0.55, 0.265, 1.55)',
+                 willChange: 'transform'
+               }">
  
   <g id="Layer_1-2" data-name="Layer 1">
     <g>
@@ -253,7 +265,9 @@
             <!-- Region Header -->
         
             
-            <img :src="`/map/${getRegionFileName(selectedRegion)}`" :alt="getRegionName(selectedRegion)" class="region-detail-image" />
+            <img :src="`/map/${getRegionFileName(selectedRegion)}`" 
+                 :alt="getRegionName(selectedRegion)" 
+                 class="region-detail-image" />
             
             <!-- Yarimstansiya Pinpoints on Individual Region Map -->
             <div v-for="pinpoint in getVisiblePinpoints()" 
@@ -408,6 +422,9 @@ const selectedPinpoint = ref(null)
 const showGallery = ref(false)
 const showMapView = ref(false)
 const currentImageIndex = ref(0)
+const isZoomed = ref(false)
+const zoomTransform = ref({ scale: 1, translateX: 0, translateY: 0 })
+const originalViewBox = ref('0 0 1046.41 834.24')
 
 // Yarimstansiya pinpoints data - EASY TO EDIT
 // Coordinates are relative to individual region SVG maps (not main map)
@@ -565,10 +582,89 @@ const handleMapClick = (event) => {
       // Check if region has an individual SVG file
       const fileName = getRegionFileName(region)
       if (fileName && fileName !== `${region}.svg`) {
-        selectedRegion.value = region
+        // First zoom to the region on the main map
+        zoomToRegion(target)
+        // Then set the selected region after zoom animation
+        setTimeout(() => {
+          selectedRegion.value = region
+        }, 2000) // Match the transition duration
       } else {
         console.log(`Individual map not available for region: ${region}`)
       }
+    }
+  }
+}
+
+const zoomToRegion = (regionElement) => {
+  if (!regionElement) return
+  
+  const svg = document.querySelector('.main-map')
+  if (!svg) return
+  
+  // Performance optimization: Force GPU acceleration
+  svg.style.transform = 'translateZ(0)'
+  
+  // Get the bounding box of the region
+  const bbox = regionElement.getBBox()
+  
+  // Calculate the center of the region
+  const regionCenterX = bbox.x + bbox.width / 2
+  const regionCenterY = bbox.y + bbox.height / 2
+  
+  // Get the SVG viewport
+  const svgRect = svg.getBoundingClientRect()
+  const svgCenterX = svgRect.width / 2
+  const svgCenterY = svgRect.height / 2
+  
+  // Calculate the scale (zoom level)
+  const scale = 5.0 // Increased for better zoom effect
+  
+  // Calculate the translation to center the region
+  // Simplified calculation for better positioning
+  const translateX = svgCenterX - (regionCenterX * scale) + 2000
+  const translateY = svgCenterY - (regionCenterY * scale) + 1800
+  
+  // Add manual offset adjustments here if needed
+  // translateX += 50  // Move right by 50px
+  // translateY -= 30  // Move up by 30px
+  
+  // Apply the transform with animation
+  isZoomed.value = true
+  zoomTransform.value = {
+    scale: scale,
+    translateX: translateX,
+    translateY: translateY
+  }
+  
+  // Debug logging
+  console.log('Zoom Debug:', {
+    regionCenter: { x: regionCenterX, y: regionCenterY },
+    svgCenter: { x: svgCenterX, y: svgCenterY },
+    bbox: { x: bbox.x, y: bbox.y, width: bbox.width, height: bbox.height },
+    transform: { scale, translateX, translateY }
+  })
+}
+
+const resetZoom = () => {
+  isZoomed.value = false
+  zoomTransform.value = {
+    scale: 1,
+    translateX: 0,
+    translateY: 0
+  }
+}
+
+const toggleZoom = () => {
+  if (isZoomed.value) {
+    resetZoom()
+  } else {
+    // Zoom to center of the image
+    const scale = 2.5
+    isZoomed.value = true
+    zoomTransform.value = {
+      scale: scale,
+      translateX: 0,
+      translateY: 0
     }
   }
 }
@@ -591,17 +687,6 @@ const regionOrder = [
 const handleLeftClick = () => {
   if (!selectedRegion.value) return
   
-  // If we're in gallery view, navigate between yarımstansiyalar in the same region
-  if (showGallery.value && selectedPinpoint.value) {
-    const currentRegionPinpoints = pinpoints.value.filter(p => p.region === selectedRegion.value)
-    const currentPinpointIndex = currentRegionPinpoints.findIndex(p => p.id === selectedPinpoint.value.id)
-    const prevPinpointIndex = currentPinpointIndex === 0 ? currentRegionPinpoints.length - 1 : currentPinpointIndex - 1
-    selectedPinpoint.value = currentRegionPinpoints[prevPinpointIndex]
-    currentImageIndex.value = 0
-    return
-  }
-  
-  // Otherwise, navigate between regions
   const currentIndex = regionOrder.indexOf(selectedRegion.value)
   const prevIndex = currentIndex === 0 ? regionOrder.length - 1 : currentIndex - 1
   selectedRegion.value = regionOrder[prevIndex]
@@ -614,17 +699,6 @@ const handleLeftClick = () => {
 const handleRightClick = () => {
   if (!selectedRegion.value) return
   
-  // If we're in gallery view, navigate between yarımstansiyalar in the same region
-  if (showGallery.value && selectedPinpoint.value) {
-    const currentRegionPinpoints = pinpoints.value.filter(p => p.region === selectedRegion.value)
-    const currentPinpointIndex = currentRegionPinpoints.findIndex(p => p.id === selectedPinpoint.value.id)
-    const nextPinpointIndex = currentPinpointIndex === currentRegionPinpoints.length - 1 ? 0 : currentPinpointIndex + 1
-    selectedPinpoint.value = currentRegionPinpoints[nextPinpointIndex]
-    currentImageIndex.value = 0
-    return
-  }
-  
-  // Otherwise, navigate between regions
   const currentIndex = regionOrder.indexOf(selectedRegion.value)
   const nextIndex = currentIndex === regionOrder.length - 1 ? 0 : currentIndex + 1
   selectedRegion.value = regionOrder[nextIndex]
@@ -645,6 +719,7 @@ const closeRegionModal = () => {
   showMapView.value = false
   selectedPinpoint.value = null
   currentImageIndex.value = 0
+  resetZoom()
 }
 
 // Pinpoint functions
@@ -932,8 +1007,8 @@ onMounted(() => {
   text-align: start;
     color: #31B1F0;
     font-size: 1.1rem;
-    font-family: 'Montserrat', sans-serif;
-    margin-top: 12px;
+  font-family: 'Montserrat', sans-serif;
+  margin-top: 12px;
     font-weight: 700;
 }
 
@@ -961,6 +1036,11 @@ onMounted(() => {
   height: 100%;
   flex: 1;
   transition: all 0.5s ease;
+  overflow: hidden;
+  /* Performance optimizations */
+  will-change: transform;
+  backface-visibility: hidden;
+  transform: translateZ(0);
 }
 
 .main-map {
@@ -968,6 +1048,12 @@ onMounted(() => {
   height: 100%;
   object-fit: contain;
   transition: all 0.5s ease;
+  will-change: transform;
+  transform-origin: center;
+  /* Performance optimizations */
+  backface-visibility: hidden;
+  perspective: 1000px;
+  transform-style: preserve-3d;
 }
 
 /* Control Buttons */
