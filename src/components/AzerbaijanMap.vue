@@ -573,14 +573,65 @@ const handleMapClick = (event) => {
   }
 }
 
+// Array of all regions in order for carousel navigation
+const regionOrder = [
+  'baku',
+  'sumqayit', 
+  'xacmaz',
+  'sirvan',
+  'qerb',
+  'simalqerb',
+  'merkezi-aran',
+  'aran',
+  'cenub',
+  'qarabag',
+  'naxcivan'
+]
+
 const handleLeftClick = () => {
-  // Handle left arrow click
-  console.log('Left arrow clicked')
+  if (!selectedRegion.value) return
+  
+  // If we're in gallery view, navigate between yarımstansiyalar in the same region
+  if (showGallery.value && selectedPinpoint.value) {
+    const currentRegionPinpoints = pinpoints.value.filter(p => p.region === selectedRegion.value)
+    const currentPinpointIndex = currentRegionPinpoints.findIndex(p => p.id === selectedPinpoint.value.id)
+    const prevPinpointIndex = currentPinpointIndex === 0 ? currentRegionPinpoints.length - 1 : currentPinpointIndex - 1
+    selectedPinpoint.value = currentRegionPinpoints[prevPinpointIndex]
+    currentImageIndex.value = 0
+    return
+  }
+  
+  // Otherwise, navigate between regions
+  const currentIndex = regionOrder.indexOf(selectedRegion.value)
+  const prevIndex = currentIndex === 0 ? regionOrder.length - 1 : currentIndex - 1
+  selectedRegion.value = regionOrder[prevIndex]
+  
+  // Keep gallery open and reset image index when changing regions
+  currentImageIndex.value = 0
+  // Don't reset selectedPinpoint - let it stay so gallery remains open
 }
 
 const handleRightClick = () => {
-  // Handle right arrow click
-  console.log('Right arrow clicked')
+  if (!selectedRegion.value) return
+  
+  // If we're in gallery view, navigate between yarımstansiyalar in the same region
+  if (showGallery.value && selectedPinpoint.value) {
+    const currentRegionPinpoints = pinpoints.value.filter(p => p.region === selectedRegion.value)
+    const currentPinpointIndex = currentRegionPinpoints.findIndex(p => p.id === selectedPinpoint.value.id)
+    const nextPinpointIndex = currentPinpointIndex === currentRegionPinpoints.length - 1 ? 0 : currentPinpointIndex + 1
+    selectedPinpoint.value = currentRegionPinpoints[nextPinpointIndex]
+    currentImageIndex.value = 0
+    return
+  }
+  
+  // Otherwise, navigate between regions
+  const currentIndex = regionOrder.indexOf(selectedRegion.value)
+  const nextIndex = currentIndex === regionOrder.length - 1 ? 0 : currentIndex + 1
+  selectedRegion.value = regionOrder[nextIndex]
+  
+  // Keep gallery open and reset image index when changing regions
+  currentImageIndex.value = 0
+  // Don't reset selectedPinpoint - let it stay so gallery remains open
 }
 
 const handleMapButtonClick = () => {
@@ -646,6 +697,11 @@ const prevImage = () => {
 // Helper to get visible pinpoints based on current view
 const getVisiblePinpoints = () => {
   if (selectedRegion.value) {
+    // In gallery mode, show only pinpoints for the current region
+    if (showGallery.value) {
+      return pinpoints.value.filter(p => p.region === selectedRegion.value)
+    }
+    // In other views (SVG/Google Maps), show pinpoints for current region
     return pinpoints.value.filter(p => p.region === selectedRegion.value)
   }
   return pinpoints.value
