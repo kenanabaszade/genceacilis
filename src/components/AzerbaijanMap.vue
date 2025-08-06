@@ -51,7 +51,7 @@
                :style="{
                  transform: `translate3d(${zoomTransform.translateX}px, ${zoomTransform.translateY}px, 0) scale(${zoomTransform.scale})`,
                  transformOrigin: 'center',
-                 transition: 'transform 3s cubic-bezier(0.68, -0.55, 0.265, 1.55)',
+                 transition: 'transform 1.5s cubic-bezier(0.68, -0.55, 0.265, 1.55)',
                  willChange: 'transform'
                }">
  
@@ -587,7 +587,7 @@ const handleMapClick = (event) => {
         // Then set the selected region after zoom animation
         setTimeout(() => {
           selectedRegion.value = region
-        }, 2000) // Match the transition duration
+        }, 1500) // Match the transition duration
       } else {
         console.log(`Individual map not available for region: ${region}`)
       }
@@ -622,7 +622,7 @@ const zoomToRegion = (regionElement) => {
   // Calculate the translation to center the region
   // Simplified calculation for better positioning
   const translateX = svgCenterX - (regionCenterX * scale) + 2000
-  const translateY = svgCenterY - (regionCenterY * scale) + 1800
+  const translateY = svgCenterY - (regionCenterY * scale) + 1900
   
   // Add manual offset adjustments here if needed
   // translateX += 50  // Move right by 50px
