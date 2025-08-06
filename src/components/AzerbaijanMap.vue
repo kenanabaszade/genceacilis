@@ -27,11 +27,12 @@
             <button class="control-btn right-btn" @click="handleRightClick">
               <img src="/icons/rightarrow.svg" alt="Right" class="control-icon" />
             </button>
-            <button class="control-btn map-btn" @click="handleMapButtonClick">
-              <img :src="showMapView ? '/icons/svgview.svg' : '/icons/mapicon.svg'" alt="Map" class="control-icon" />
+
+            <button class="control-btn home-btn" @click="closeRegionModal">
+              <img src="/icons/home.svg" alt="Home" class="control-icon" />
             </button>
-            <button class="control-btn back-btn" @click="closeRegionModal">
-              <img src="/icons/leftarrowwithbg.svg" alt="Back" class="control-icon" />
+            <button class="control-btn back-btn" @click="handleBackButton">
+              <img src="/icons/leftarrowwithbg.svg" alt="Go Back" class="control-icon" />
             </button>
           </div>
             <div class="region-header" v-if="selectedRegion && !showGallery">
@@ -260,29 +261,10 @@
   </g>
           </svg>
           
-          <!-- Detailed Region Map -->
-          <div v-if="selectedRegion && !showGallery && !showMapView" class="region-detail-container">
-            <!-- Region Header -->
-        
-            
-            <img :src="`/map/${getRegionFileName(selectedRegion)}`" 
-                 :alt="getRegionName(selectedRegion)" 
-                 class="region-detail-image" />
-            
-            <!-- Yarimstansiya Pinpoints on Individual Region Map -->
-            <div v-for="pinpoint in getVisiblePinpoints()" 
-                 :key="pinpoint.id" 
-                 class="pinpoint-overlay"
-                 :style="{ left: pinpoint.x + '%', top: pinpoint.y + '%' }"
-                 @click.stop="handlePinPointClick(pinpoint)">
-              <img src="/icons/yarimstansiya.svg" 
-                   alt="Yarımstansiya" 
-                   class="pinpoint-icon" />
-            </div>
-          </div>
+
 
           <!-- Google Maps View -->
-          <div v-if="selectedRegion && showMapView" class="map-view-container">
+          <div v-show="selectedRegion && !showGallery" class="map-view-container" :class="{ 'map-view-enter': selectedRegion && !showGallery }">
             <!-- Map Header -->
             <!-- <div class="map-header">
               <h3 class="map-title">{{ getRegionName(selectedRegion) }}</h3>
@@ -303,6 +285,8 @@
                    class="pinpoint-icon" />
             </div>
           </div>
+
+
 
           <!-- Gallery Layout (replaces region map when pinpoint is clicked) -->
           <div v-if="showGallery" class="gallery-container">
@@ -359,18 +343,40 @@
             <table class="data-table">
               <thead>
                 <tr>
-                  <th class="table-header-blue" style="border-radius: 12px 0px 0px 0px;">Bütün bölgələr üzrə</th>
+                  <th class="table-header-blue" style="border-radius: 12px 0px 0px 0px;">
+                    {{ selectedPinpoint ? selectedPinpoint.name : (selectedRegion && !showGallery ? getRegionName(selectedRegion) : 'Bütün bölgələr üzrə') }}
+                  </th>
                   <th class="table-header-blue" style="border-radius: 0px 12px 0px 0px;"></th>
                 </tr>
                 <tr>
-                  <th class="table-header-light-blue">Yenidən Qurulan Yarımstansiyalar</th>
                   <th class="table-header-light-blue">
-                    <div class="count-badge">200</div>
+                    {{ selectedPinpoint ? 'BMKZ Y/S 110/35/6 kV' : 'Yenidən Qurulan Yarımstansiyalar' }}
+                  </th>
+                  <th class="table-header-light-blue">
+                    <div class="count-badge">
+                      {{ selectedPinpoint ? '9' : (selectedRegion && !showGallery ? getRegionSubstationCount(selectedRegion) : '200') }}
+                    </div>
                   </th>
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="(region, index) in substationData.butunBolgelerUzre.regions" :key="region.name" 
+                <tr v-if="selectedPinpoint" 
+                    v-for="(detail, index) in getSubstationDetails(selectedPinpoint)" 
+                    :key="`detail-${index}`" 
+                    :class="{ 'alternate-row': index % 2 === 1 }">
+                  <td class="region-name">{{ detail.label }}</td>
+                  <td class="count">{{ detail.value }}</td>
+                </tr>
+                <tr v-else-if="selectedRegion && !showGallery" 
+                    v-for="(substation, index) in getRegionSubstations(selectedRegion)" 
+                    :key="`substation-${index}`" 
+                    :class="{ 'alternate-row': index % 2 === 1 }">
+                  <td class="region-name">{{ substation.name }}</td>
+                  <td class="count">{{ substation.specs }}</td>
+                </tr>
+                <tr v-else 
+                    v-for="(region, index) in substationData.butunBolgelerUzre.regions" 
+                    :key="`region-${region.name}`" 
                     :class="{ 'alternate-row': index % 2 === 1 }">
                   <td class="region-name">{{ region.name }}</td>
                   <td class="count">{{ region.count }}</td>
@@ -579,18 +585,13 @@ const handleMapClick = (event) => {
   if (target.classList.contains('map-region')) {
     const region = target.getAttribute('data-region')
     if (region) {
-      // Check if region has an individual SVG file
-      const fileName = getRegionFileName(region)
-      if (fileName && fileName !== `${region}.svg`) {
-        // First zoom to the region on the main map
-        zoomToRegion(target)
-        // Then set the selected region after zoom animation
-        setTimeout(() => {
-          selectedRegion.value = region
-        }, 1500) // Match the transition duration
-      } else {
-        console.log(`Individual map not available for region: ${region}`)
-      }
+      // First zoom to the region on the main map
+      zoomToRegion(target)
+      // Then set the selected region after zoom animation
+      setTimeout(() => {
+        selectedRegion.value = region
+        showMapView.value = true // Show Google Maps by default
+      }, 1500) // Match the transition duration
     }
   }
 }
@@ -622,7 +623,7 @@ const zoomToRegion = (regionElement) => {
   // Calculate the translation to center the region
   // Simplified calculation for better positioning
   const translateX = svgCenterX - (regionCenterX * scale) + 2000
-  const translateY = svgCenterY - (regionCenterY * scale) + 1900
+  const translateY = svgCenterY - (regionCenterY * scale) + 1800
   
   // Add manual offset adjustments here if needed
   // translateX += 50  // Move right by 50px
@@ -693,6 +694,10 @@ const handleLeftClick = () => {
   
   // Keep gallery open and reset image index when changing regions
   currentImageIndex.value = 0
+  // Maintain Google Maps view when navigating
+  if (!showGallery.value) {
+    showMapView.value = true
+  }
   // Don't reset selectedPinpoint - let it stay so gallery remains open
 }
 
@@ -705,21 +710,40 @@ const handleRightClick = () => {
   
   // Keep gallery open and reset image index when changing regions
   currentImageIndex.value = 0
+  // Maintain Google Maps view when navigating
+  if (!showGallery.value) {
+    showMapView.value = true
+  }
   // Don't reset selectedPinpoint - let it stay so gallery remains open
 }
 
-const handleMapButtonClick = () => {
-  // Handle map button click
-  toggleMapView()
+
+
+const handleBackButton = () => {
+  console.log('handleBackButton called')
+  if (showGallery.value) {
+    // If in gallery, go back to Google Maps view
+    console.log('Going back to Google Maps from gallery')
+    showGallery.value = false
+    selectedPinpoint.value = null
+    currentImageIndex.value = 0
+    showMapView.value = true
+  } else {
+    // If in Google Maps view, go back to main map
+    console.log('Going back to main map from Google Maps')
+    closeRegionModal()
+  }
 }
 
 const closeRegionModal = () => {
+  console.log('closeRegionModal called')
   selectedRegion.value = null
   showGallery.value = false
   showMapView.value = false
   selectedPinpoint.value = null
   currentImageIndex.value = 0
   resetZoom()
+  console.log('closeRegionModal completed')
 }
 
 // Pinpoint functions
@@ -737,23 +761,9 @@ const closeGallery = () => {
   currentImageIndex.value = 0
 }
 
-const toggleMapView = () => {
-  showMapView.value = !showMapView.value
-  // Hide gallery when switching to map view
-  if (showMapView.value) {
-    showGallery.value = false
-    selectedPinpoint.value = null
-    currentImageIndex.value = 0
-  }
-}
 
-const closeMapView = () => {
-  showMapView.value = false
-  // Reset gallery state when closing map view
-  showGallery.value = false
-  selectedPinpoint.value = null
-  currentImageIndex.value = 0
-}
+
+
 
 const nextImage = () => {
   if (selectedPinpoint.value && selectedPinpoint.value.images.length > 0) {
@@ -799,21 +809,129 @@ const getRegionName = (region) => {
   return regionNames[region] || region
 }
 
-const getRegionFileName = (region) => {
-  const fileNames = {
-    'baku': 'BAkuRetsi.svg',
-    'sumqayit': 'SUmqayitRetsi.svg',
-    'xacmaz': 'XAcmazRetsi.svg',
-    'sirvan': 'SHirvanREtsi.svg',
-    'qerb': 'QErbREtsi.svg',
-    'simalqerb': 'ShimalQErbREtsi.svg',
-    'merkezi-aran': 'MerKEziARanREtsi.svg',
-    'aran': 'ARanRetsi.svg',
-    'cenub': 'CEnubRetsi.svg',
-    'qarabag': 'Qarrrabaaqq.svg',
-    'naxcivan': 'NaxcivanREtsi.svg'
+const getRegionSubstations = (region) => {
+  const substationData = {
+    'baku': [
+      { name: 'Bakı-Binəqədi EŞ', specs: '110 / 35 / 10' },
+      { name: 'Bakı-Nərimanov EŞ', specs: '110 / 35 / 10' },
+      { name: 'Bakı-Xətai EŞ', specs: '110 / 35 / 10' },
+      { name: 'Bakı-Qaradağ EŞ', specs: '110 / 35 / 10' },
+      { name: 'Bakı-Nəsimi EŞ', specs: '110 / 35 / 10' },
+      { name: 'Bakı-Xəzər EŞ', specs: '110 / 35 / 10' }
+    ],
+    'sumqayit': [
+      { name: 'Sumqayıt EŞ', specs: '110 / 35 / 10' },
+      { name: 'Xızı EŞ', specs: '110 / 35 / 10' },
+      { name: 'Qobustan EŞ', specs: '110 / 35 / 10' }
+    ],
+    'xacmaz': [
+      { name: 'Xaçmaz EŞ', specs: '110 / 35 / 10' },
+      { name: 'Qusar EŞ', specs: '110 / 35 / 10' },
+      { name: 'Siyəzən EŞ', specs: '110 / 35 / 10' },
+      { name: 'Quba EŞ', specs: '110 / 35 / 10' },
+      { name: 'Şabran EŞ', specs: '110 / 35 / 10' }
+    ],
+    'sirvan': [
+      { name: 'Şirvan EŞ', specs: '110 / 35 / 10' },
+      { name: 'Hacıqabul EŞ', specs: '110 / 35 / 10' },
+      { name: 'Sabirabad EŞ', specs: '110 / 35 / 10' },
+      { name: 'Neftçala EŞ', specs: '110 / 35 / 10' },
+      { name: 'Salyan EŞ', specs: '110 / 35 / 10' },
+      { name: 'Ağsu EŞ', specs: '110 / 35 / 10' },
+      { name: 'Kürdəmir EŞ', specs: '110 / 35 / 10' },
+      { name: 'Saatlı EŞ', specs: '110 / 35 / 10' }
+    ],
+    'qerb': [
+      { name: 'Gədəbəy EŞ', specs: '110 / 35 / 10' },
+      { name: 'Gəncə EŞ', specs: '110 / 35 / 10' },
+      { name: 'Qazax EŞ', specs: '110 / 35 / 10' },
+      { name: 'Ağstafa EŞ', specs: '110 / 35 / 10' },
+      { name: 'Samux EŞ', specs: '110 / 35 / 10' },
+      { name: 'Şəmkir EŞ', specs: '110 / 35 / 10' },
+      { name: 'Tovuz EŞ', specs: '110 / 35 / 10' },
+      { name: 'Daşkəsən EŞ', specs: '110 / 35 / 10' },
+      { name: 'Göygöl EŞ', specs: '110 / 35 / 10' }
+    ],
+    'simalqerb': [
+      { name: 'Qəbələ EŞ', specs: '110 / 35 / 10' },
+      { name: 'İsmayıllı EŞ', specs: '110 / 35 / 10' },
+      { name: 'Qax EŞ', specs: '110 / 35 / 10' },
+      { name: 'Şəki EŞ', specs: '110 / 35 / 10' },
+      { name: 'Balakən EŞ', specs: '110 / 35 / 10' },
+      { name: 'Oğuz EŞ', specs: '110 / 35 / 10' },
+      { name: 'Şamaxı EŞ', specs: '110 / 35 / 10' },
+      { name: 'Zaqatala EŞ', specs: '110 / 35 / 10' }
+    ],
+    'merkezi-aran': [
+      { name: 'Ağdaş EŞ', specs: '110 / 35 / 10' },
+      { name: 'Naftalan EŞ', specs: '110 / 35 / 10' },
+      { name: 'Yevlax EŞ', specs: '110 / 35 / 10' },
+      { name: 'Goranboy EŞ', specs: '110 / 35 / 10' },
+      { name: 'Göyçay EŞ', specs: '110 / 35 / 10' },
+      { name: 'Ucar EŞ', specs: '110 / 35 / 10' },
+      { name: 'Mingəçevir EŞ', specs: '110 / 35 / 10' }
+    ],
+    'aran': [
+      { name: 'Ağdam EŞ', specs: '110 / 35 / 10' },
+      { name: 'Ağcabədi EŞ', specs: '110 / 35 / 10' },
+      { name: 'Tərtər EŞ', specs: '110 / 35 / 10' },
+      { name: 'Bərdə EŞ', specs: '110 / 35 / 10' },
+      { name: 'Beyləqan EŞ', specs: '110 / 35 / 10' },
+      { name: 'Zərdab EŞ', specs: '110 / 35 / 10' },
+      { name: 'Füzuli EŞ', specs: '110 / 35 / 10' },
+      { name: 'İmişli EŞ', specs: '110 / 35 / 10' }
+    ],
+    'cenub': [
+      { name: 'Astara EŞ', specs: '110 / 35 / 10' },
+      { name: 'Biləsuvar EŞ', specs: '110 / 35 / 10' },
+      { name: 'Masallı EŞ', specs: '110 / 35 / 10' },
+      { name: 'Yardımlı EŞ', specs: '110 / 35 / 10' },
+      { name: 'Cəlilabad EŞ', specs: '110 / 35 / 10' },
+      { name: 'Lənkəran EŞ', specs: '110 / 35 / 10' },
+      { name: 'Lerik EŞ', specs: '110 / 35 / 10' }
+    ],
+    'qarabag': [
+      { name: 'Qubadlı EŞ', specs: '110 / 35 / 10' },
+      { name: 'Xocali EŞ', specs: '110 / 35 / 10' },
+      { name: 'Cəbrayıl EŞ', specs: '110 / 35 / 10' },
+      { name: 'Kəlbəcər EŞ', specs: '110 / 35 / 10' },
+      { name: 'Laçın EŞ', specs: '110 / 35 / 10' },
+      { name: 'Zəngilan EŞ', specs: '110 / 35 / 10' }
+    ],
+    'naxcivan': [
+      { name: 'Naxçıvan EŞ', specs: '110 / 35 / 10' },
+      { name: 'Şərur EŞ', specs: '110 / 35 / 10' }
+    ]
   }
-  return fileNames[region] || `${region}.svg`
+  return substationData[region] || []
+}
+
+const getRegionSubstationCount = (region) => {
+  const substations = getRegionSubstations(region)
+  return substations.length
+}
+
+const getSubstationDetails = (pinpoint) => {
+  return [
+    { label: 'Məkan', value: '' },
+    { label: 'Əhali Abonenti', value: '25000' },
+    { label: 'Qeyri Əhali Abonenti', value: '1800' },
+    { label: 'Enerji gücü', value: '110/35/6 kv' },
+    { label: '*****', value: '110/35/10' },
+    { label: '*****', value: '110/35/10' },
+    { label: '*****', value: '110/35/10' },
+    { label: '*****', value: '110/35/10' },
+    { label: '*****', value: '110/35/10' },
+    { label: '*****', value: '110/35/10' },
+    { label: '*****', value: '110/35/10' },
+    { label: '*****', value: '110/35/10' },
+    { label: '*****', value: '110/35/10' }
+  ]
+}
+
+const getRegionFileName = (region) => {
+  // No longer using individual SVG maps
+  return null
 }
 
 const getGoogleMapFileName = (region) => {
@@ -1092,10 +1210,18 @@ onMounted(() => {
   height: 60px;
 }
 
-/* Special styling for the back button (bottom-right) */
+/* Special styling for the home button */
+.home-btn {
+  border: none !important;
+  transition: all 0.3s ease !important;
+}
+
+/* Special styling for the back button */
 .back-btn {
   border: none !important;
+  transition: all 0.3s ease !important;
 }
+
 
 .region-title {
   margin: 0 0 0 20px;
@@ -1144,6 +1270,7 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   gap: 24px;
+  margin-top: 50px;
   overflow-y: auto;
   max-height: 100vh;
 }
@@ -1664,8 +1791,41 @@ onMounted(() => {
   align-items: center;
   justify-content: center;
   padding-top: 0;
+  opacity: 0;
+  transform: scale(0.8) translateY(50px);
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  animation: mapViewSlideIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
 }
 
+@keyframes mapViewSlideIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.8) translateY(0);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.map-view-enter {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.map-view-container:not(.map-view-enter) {
+  opacity: 0;
+  transform: scale(0.8);
+}
+
+.map-view-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: transform 0.5s ease;
+  border-radius: 12px;
+}
+ 
 .map-view-image {
   width: 100%;
   height: 100%;
@@ -1678,6 +1838,19 @@ onMounted(() => {
   transform: translate(-50%, -50%);
   cursor: pointer;
   z-index: 10;
+  opacity: 0;
+  animation: pinpointFadeIn 0.3s ease 0.8s forwards;
+}
+
+@keyframes pinpointFadeIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.5);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
 }
 
  
@@ -1877,4 +2050,6 @@ onMounted(() => {
     right: 8px;
   }
 }
+
+
 </style> 
