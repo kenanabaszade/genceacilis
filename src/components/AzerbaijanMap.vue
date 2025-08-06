@@ -19,20 +19,26 @@
       <div class="map-section">
         <div class="map-container">
           <!-- Control Buttons - Only show when viewing individual regions -->
-          <div v-if="selectedRegion" class="control-buttons">
+           <div class="d-flex justify-content-between">
+            <div v-if="selectedRegion" class="control-buttons">
             <button class="control-btn left-btn" @click="handleLeftClick">
               <img src="/icons/leftarrow.svg" alt="Left" class="control-icon" />
             </button>
             <button class="control-btn right-btn" @click="handleRightClick">
               <img src="/icons/rightarrow.svg" alt="Right" class="control-icon" />
             </button>
-            <button class="control-btn map-btn" @click="handleMapClick">
-              <img src="/icons/mapicon.svg" alt="Map" class="control-icon" />
+            <button class="control-btn map-btn" @click="handleMapButtonClick">
+              <img :src="showMapView ? '/icons/svgview.svg' : '/icons/mapicon.svg'" alt="Map" class="control-icon" />
             </button>
             <button class="control-btn back-btn" @click="closeRegionModal">
               <img src="/icons/leftarrowwithbg.svg" alt="Back" class="control-icon" />
             </button>
           </div>
+            <div class="region-header" v-if="selectedRegion && !showGallery">
+              <h3 class="region-title">{{ getRegionName(selectedRegion) }}</h3>
+            </div>
+           </div>
+         
           
           <!-- Main Azerbaijan Map -->
           <svg v-if="!selectedRegion" id="Layer_2" data-name="Layer 2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1046.41 834.24" @click="handleMapClick" class="main-map">
@@ -134,7 +140,7 @@
         <text class="cls-14" transform="translate(676.43 515.46)"><tspan x="0" y="0">ŞİR</tspan><tspan class="cls-29" x="24.6" y="0">V</tspan><tspan x="35.08" y="0">AN RETSİ</tspan></text>
       </g>
       <g>
-        <path class="cls-18 map-region" data-region="merkeziaran" d="M684.02,338.65s-14.15,10.62-16.24,12.07c-2.09,1.45-3.54,11.58-3.54,15.93s-4.5,6.44-4.5,6.44l-7.08,4.02,3.22,19.95-4.83,12.23s3.22,6.28,1.45,6.92c-1.77.64-3.86,7.56-4.18,9.98-.32,2.41-12.55,5.31-12.55,5.31l-10.13,6.27-3.22,10.14-8.05-2.71-1.88-.63-9.05-4.95h-10.61l-9.17-5.79-6.75-9.65-4.83-2.17-6.27,3.62-5.79,3.38-.72,7.48s-5.79,1.93-8.44-1.93c-2.65-3.86,7.24-15.93,7.96-17.88.72-1.95-4.1-17.96-4.1-19.65s6.76-10.74,6.76-10.74v-4.95l-23.16,2.9-2.53-2.66-7.44-.89-3.62-3.94-7.8,2.17-4.26,6.8s-.48-1.41-.97-3.82c-.48-2.41-22.35-13.43-22.35-13.43l4.1-4.34-10.05-4.35-1.13,7.48-6.75,1.21s-11.82,13.76-12.3,16.33c-.48,2.58,4.5,3.86,4.5,3.86l1.93,5.63-17.97,10.05s-2.89,8.69-3.54,9.82c-.64,1.13-8.36,3.38-11.74,2.52s-1.29-6.22-2.09-7.98c-.8-1.77-16.73,4.02-16.73,4.02l-25.24-2.25s-.33-2.09,0-4.99c.32-2.9-13.83-2.9-13.83-2.9,0,0-2.89,7.08-5.95,9.01-3.06,1.93-3.86.48-4.83-2.58-.97-3.05-10.13,1.29-10.77,4.67-.64,3.38-5.79,3-5.79,3,0,0,1.61,4.72,2.41,6.01.8,1.28-1.77,4.02-4.98,4.18-3.22.16-3.38,5.31-3.38,5.31,0,0-5.47,1.29-10.29,0-4.68-1.25-6.91-2.83-7.04-2.93l6.64-1.53-3.86-6.76-15.44-8.45s-12.55,11.82-14.24,11.1c-1.69-.72-5.31-10.13-5.31-11.1v-24.62l-5.07-2.17-9.89,6.76s-6.83,1.18-18.25-3.63l5.07-11.49s-6.6-7.4,0-11.9c6.59-4.51,8.04-5.63,8.04-5.63l3.86-16.89,9.65-9.98,1.13-8.37s5.15-7.56,5.15-14.8-4.83-16.89-4.83-16.89c0,0,4.83-6.11,1.13-10.78-3.7-4.67,8.85-10.94,8.85-10.94l2.09-6.44,21.71-20.43,13.99-1.77s1.24-13.66,8.45-18.75h0l23.07,11.22,7.6-1.21c12.67,2.17,36.55,24.26,36.55,24.26l5.07-3.26,9.05,6.52,34.74,11.95,7.6-2.17,4.7,8.69,10.5-7.96,3.98,11.22-7.24,7.6,15.2,7.96,14.11-5.07,10.49,2.17,13.03-2.54.72,4.34,23.84-1.69,4.18,5.95,8.52-.32,5.47,1.77,1.12,10.62-7.4,2.41,9.33,14.48c.91-.97,4.49-2.08,8.43-3.05,5.84-1.44,12.47-2.58,12.47-2.58l-.64-13.03,12.71-3.22,1.28-5.15s11.1-5.31,12.55-6.44c1.45-1.12,7.24.97,7.88.32.64-.64,2.74-9.01,2.74-9.01l9.97-.64c-.16-1.29,9.81-13.68,9.81-13.68l.48-7.4,5.63.8-.97,11.1,2.9,8.21-5.55,11.54-4.58,1.69-5.15,3.06-3.42,9.65,10.46,8.85,4.5,6.92,8.68-2.41c3.7,1.45,12.87,12.39,12.87,12.39Z"/>
+        <path class="cls-18 map-region" data-region="merkezi-aran" d="M684.02,338.65s-14.15,10.62-16.24,12.07c-2.09,1.45-3.54,11.58-3.54,15.93s-4.5,6.44-4.5,6.44l-7.08,4.02,3.22,19.95-4.83,12.23s3.22,6.28,1.45,6.92c-1.77.64-3.86,7.56-4.18,9.98-.32,2.41-12.55,5.31-12.55,5.31l-10.13,6.27-3.22,10.14-8.05-2.71-1.88-.63-9.05-4.95h-10.61l-9.17-5.79-6.75-9.65-4.83-2.17-6.27,3.62-5.79,3.38-.72,7.48s-5.79,1.93-8.44-1.93c-2.65-3.86,7.24-15.93,7.96-17.88.72-1.95-4.1-17.96-4.1-19.65s6.76-10.74,6.76-10.74v-4.95l-23.16,2.9-2.53-2.66-7.44-.89-3.62-3.94-7.8,2.17-4.26,6.8s-.48-1.41-.97-3.82c-.48-2.41-22.35-13.43-22.35-13.43l4.1-4.34-10.05-4.35-1.13,7.48-6.75,1.21s-11.82,13.76-12.3,16.33c-.48,2.58,4.5,3.86,4.5,3.86l1.93,5.63-17.97,10.05s-2.89,8.69-3.54,9.82c-.64,1.13-8.36,3.38-11.74,2.52s-1.29-6.22-2.09-7.98c-.8-1.77-16.73,4.02-16.73,4.02l-25.24-2.25s-.33-2.09,0-4.99c.32-2.9-13.83-2.9-13.83-2.9,0,0-2.89,7.08-5.95,9.01-3.06,1.93-3.86.48-4.83-2.58-.97-3.05-10.13,1.29-10.77,4.67-.64,3.38-5.79,3-5.79,3,0,0,1.61,4.72,2.41,6.01.8,1.28-1.77,4.02-4.98,4.18-3.22.16-3.38,5.31-3.38,5.31,0,0-5.47,1.29-10.29,0-4.68-1.25-6.91-2.83-7.04-2.93l6.64-1.53-3.86-6.76-15.44-8.45s-12.55,11.82-14.24,11.1c-1.69-.72-5.31-10.13-5.31-11.1v-24.62l-5.07-2.17-9.89,6.76s-6.83,1.18-18.25-3.63l5.07-11.49s-6.6-7.4,0-11.9c6.59-4.51,8.04-5.63,8.04-5.63l3.86-16.89,9.65-9.98,1.13-8.37s5.15-7.56,5.15-14.8-4.83-16.89-4.83-16.89c0,0,4.83-6.11,1.13-10.78-3.7-4.67,8.85-10.94,8.85-10.94l2.09-6.44,21.71-20.43,13.99-1.77s1.24-13.66,8.45-18.75h0l23.07,11.22,7.6-1.21c12.67,2.17,36.55,24.26,36.55,24.26l5.07-3.26,9.05,6.52,34.74,11.95,7.6-2.17,4.7,8.69,10.5-7.96,3.98,11.22-7.24,7.6,15.2,7.96,14.11-5.07,10.49,2.17,13.03-2.54.72,4.34,23.84-1.69,4.18,5.95,8.52-.32,5.47,1.77,1.12,10.62-7.4,2.41,9.33,14.48c.91-.97,4.49-2.08,8.43-3.05,5.84-1.44,12.47-2.58,12.47-2.58l-.64-13.03,12.71-3.22,1.28-5.15s11.1-5.31,12.55-6.44c1.45-1.12,7.24.97,7.88.32.64-.64,2.74-9.01,2.74-9.01l9.97-.64c-.16-1.29,9.81-13.68,9.81-13.68l.48-7.4,5.63.8-.97,11.1,2.9,8.21-5.55,11.54-4.58,1.69-5.15,3.06-3.42,9.65,10.46,8.85,4.5,6.92,8.68-2.41c3.7,1.45,12.87,12.39,12.87,12.39Z"/>
         <polyline class="cls-7" points="344.33 223.28 343.6 231.77 344.7 250.23 343.43 260.1 340.35 269.65 344.7 277.8 351.97 278.7 357.34 282.47 353 289.23 347.14 297.87 350.84 303.05 358.09 298.57 364.76 299.53 369.5 304.63 368.87 315.8 369.5 325.1 374.92 326.7 380.57 325.85 382.06 327.68 380.72 332.08 377.74 337.54 375.14 338.74 365.83 347.9 350.61 357.01 338.48 356.96 328.58 361.44 320.69 366.44 310.67 370.39 303.77 378.98 292.46 386.52"/>
         <polygon class="cls-7" points="374.5 269.8 382.79 280.03 397.83 273.96 394.21 268.1 390.21 268.16 386.62 269.1 379.73 266.71 374.5 269.8"/>
         <path class="cls-7" d="M423.94,304.43l.32-3.09-.85-.75-2.2-.2s-11.46.37-12.08.2l-3.2,5.11,2.56,7.78,5.75,3.41,6.41.32,1.58-2.45-.43-1.49-.11-2.88.43-1.7,1.81-4.26Z"/>
@@ -163,7 +169,7 @@
         <g>
           <polygon class="cls-10" points="63.28 221.53 58.13 217.08 57.31 216.96 56.61 217.08 56.02 217.43 55.44 218.02 57.19 223.52 61.4 224.22 63.28 221.53"/>
           <polygon class="cls-10" points="19.52 208.65 26.08 210.88 28.65 205.38 26.66 198.47 19.52 196.72 16.72 198.71 16.13 202.1 17.19 205.73 19.52 208.65"/>
-          <path class="cls-18 map-region" data-region="merkezi-aran" d="M337.65,208.58c-.96-2.9,1.13-10.78,1.13-10.78l-10.29-6.76-6.11,2.89-6.02-2.89-2.03,2.87-3.51.47-3.51-.94-3.51-.35-3.86,2.46-1.99,3.86-1.05,3.74-1.64,2.58-3.98.12-3.16-1.99-5.15-6.79-2.93-2.69-10.88-3.51-3.74-2.34-10.76-9.71-5.26-6.67-2.81-2.81-3.28-1.05h-13.69l-4.09.94-4.56,3.04-4.8,3.04-3.63,1.29-4.33.47-8.78-1.17-27.02-9.71-9.13-5.62-3.51-2.22-7.49-6.44-4.44-6.9,4.09-5.03,4.21-1.52,2.58-1.41-.23-1.52-4.21-1.64-11.93-2.46-26.09-10.18-5.97-5.62-2.58-3.04-2.69-.47-5.97,1.76-3.74.35-2.81-.59-8.78-4.56-3.39-1.76-5.84-.23-5.85,1.99-27.61,22.94-17.31,14.39,6.67,14.39-1.87,5.03,1.05,3.04,3.16,1.29h11.82l3.16,1.05,9.48,7.49,2.34,3.39.23,3.86-6.2,4.56-18.02-.7-1.87,7.72,2.34,3.98,3.86,2.69,3.51.35,1.17-2.81.47-4.44,3.04,1.64,5.97,6.2,3.74,2.34,2.81,3.04,2.92,2.57,8.54.94,7.95,3.28,4.21.7,8.42-4.21,1.75-.94,1.14-.11,3.89-.36,1.05,5.62-1.52,7.84,2.22,2.46,2.57.58,1.75.59,4.8,3.86,7.84,10.07,2.81,2.93,3.74,1.28,4.33.23,3.16,1.76.35,5.26-3.51,9.95-4.8,5.38-14.04,6.9-7.37,3.51-7.14,5.85-4.56,8.08v10.18l2.58,5.62,3.51,3.39,3.75,2.92,3.16,3.98.7,2.34.35,5.27.82,2.58,1.75,1.99,3.74,2.46,1.53,2.81,5.85,12.52,10.76,10.07,42.35,24.1.23.23,7.72,8.54s5.28-9.45,10.59-9.21c5.31.24,21.71,0,21.71,0,0,0,18.57-.49,20.99,0,2.41.49,29.43,4.5,29.43,4.5l5.07-11.49s-6.6-7.4,0-11.9c6.59-4.51,8.04-5.63,8.04-5.63l3.86-16.89,9.65-9.98,1.13-8.37s5.15-7.56,5.15-14.8-4.83-16.89-4.83-16.89c0,0,4.83-6.11,1.13-10.78-3.7-4.67,8.85-10.94,8.85-10.94l2.09-6.44,21.71-20.43,13.99-1.77s1.24-13.66,8.45-18.75h0c.57-.41,1.19-.76,1.84-1.04,0,0-10.13-11.26-11.1-14.16ZM122.7,307.42l-6.08,4.68-6.32-1.87-1.06-2.34-.35-2.46.35-2.45,1.06-2.46,2.34-1.64,2.46-.7h2.69l2.69.35,4.68,2.69-2.46,6.2Z"/>
+                     <path class="cls-18 map-region" data-region="qerb" d="M337.65,208.58c-.96-2.9,1.13-10.78,1.13-10.78l-10.29-6.76-6.11,2.89-6.02-2.89-2.03,2.87-3.51.47-3.51-.94-3.51-.35-3.86,2.46-1.99,3.86-1.05,3.74-1.64,2.58-3.98.12-3.16-1.99-5.15-6.79-2.93-2.69-10.88-3.51-3.74-2.34-10.76-9.71-5.26-6.67-2.81-2.81-3.28-1.05h-13.69l-4.09.94-4.56,3.04-4.8,3.04-3.63,1.29-4.33.47-8.78-1.17-27.02-9.71-9.13-5.62-3.51-2.22-7.49-6.44-4.44-6.9,4.09-5.03,4.21-1.52,2.58-1.41-.23-1.52-4.21-1.64-11.93-2.46-26.09-10.18-5.97-5.62-2.58-3.04-2.69-.47-5.97,1.76-3.74.35-2.81-.59-8.78-4.56-3.39-1.76-5.84-.23-5.85,1.99-27.61,22.94-17.31,14.39,6.67,14.39-1.87,5.03,1.05,3.04,3.16,1.29h11.82l3.16,1.05,9.48,7.49,2.34,3.39.23,3.86-6.2,4.56-18.02-.7-1.87,7.72,2.34,3.98,3.86,2.69,3.51.35,1.17-2.81.47-4.44,3.04,1.64,5.97,6.2,3.74,2.34,2.81,3.04,2.92,2.57,8.54.94,7.95,3.28,4.21.7,8.42-4.21,1.75-.94,1.14-.11,3.89-.36,1.05,5.62-1.52,7.84,2.22,2.46,2.57.58,1.75.59,4.8,3.86,7.84,10.07,2.81,2.93,3.74,1.28,4.33.23,3.16,1.76.35,5.26-3.51,9.95-4.8,5.38-14.04,6.9-7.37,3.51-7.14,5.85-4.56,8.08v10.18l2.58,5.62,3.51,3.39,3.75,2.92,3.16,3.98.7,2.34.35,5.27.82,2.58,1.75,1.99,3.74,2.46,1.53,2.81,5.85,12.52,10.76,10.07,42.35,24.1.23.23,7.72,8.54s5.28-9.45,10.59-9.21c5.31.24,21.71,0,21.71,0,0,0,18.57-.49,20.99,0,2.41.49,29.43,4.5,29.43,4.5l5.07-11.49s-6.6-7.4,0-11.9c6.59-4.51,8.04-5.63,8.04-5.63l3.86-16.89,9.65-9.98,1.13-8.37s5.15-7.56,5.15-14.8-4.83-16.89-4.83-16.89c0,0,4.83-6.11,1.13-10.78-3.7-4.67,8.85-10.94,8.85-10.94l2.09-6.44,21.71-20.43,13.99-1.77s1.24-13.66,8.45-18.75h0c.57-.41,1.19-.76,1.84-1.04,0,0-10.13-11.26-11.1-14.16ZM122.7,307.42l-6.08,4.68-6.32-1.87-1.06-2.34-.35-2.46.35-2.45,1.06-2.46,2.34-1.64,2.46-.7h2.69l2.69.35,4.68,2.69-2.46,6.2Z"/>
           <polyline class="cls-7" points="95.53 212.76 94.98 203.89 93.17 190.61 93.17 188.97 95.3 185.67 94.13 181.72 98.92 166.49 97.64 157.64 77.11 155.05 71.86 152.66 64.93 147.84 57.05 146.03 53.21 143.69 47.26 137.81 44.78 135.1 44.26 133.99 43.5 129.97"/>
           <polyline class="cls-7" points="106.63 230.39 108.94 222.11 115.54 213.05 126.52 209.85 131.95 204.1 133.98 195.68 129.39 181.72 135.15 177.46 145.48 177.57 148.89 171.71 153.79 167.45 163.95 162.22"/>
           <path class="cls-7" d="M112.7,275.88l1.74,3.89,1.1,8.18,5.35,3.67,6.69-.05,5.65,2.45,3.73,5.11-.41,6.58,4.15,3.09,4.1,2.91,4.73,2.44,4.48-4.69,1.33-8,.9-10.54s.29-18.73-.85-20.99l2.34-10.55-.11-7.46,3.2-5.75,6.39-4.44,8.22-6.46,7.77-5.84s5.59-11.1,6.18-13.96l8.74-1.7,18.22,2.24,8.95-2.02,2.88-7.03,4.41-5.82,6.19-6.63,7.29-11.93-20.53-13.37"/>
@@ -186,18 +192,18 @@
       </g>
       <g>
         <g>
-          <polygon class="cls-18 map-region" data-region="baku" points="1045.4 382.05 1044.23 384.51 1040.84 383.57 1038.5 384.39 1035.81 382.05 1034.05 378.54 1034.52 375.5 1036.86 377.37 1038.62 376.79 1040.13 375.5 1042.01 375.5 1044.7 378.31 1045.4 382.05"/>
-                      <polygon class="cls-18 map-region" data-region="sumqayit" points="1001.65 352.56 999.42 350.46 997.67 347.88 997.2 342.85 996.03 341.33 993.23 342.26 991 341.09 991 346.71 996.85 354.79 996.03 360.64 999.66 360.87 1002.35 360.17 1003.75 358.65 1003.52 355.72 1001.65 352.56"/>
-                      <path class="cls-18 map-region" data-region="xacmaz" d="M1002.82,399.96l-.59,3.28-3.51-6.79-3.75-5.85-4.56-5.26-9.01-7.37-3.74-2.11-4.09-1.52-8.19-1.17-6.79-2.22-3.63-.47-2.11.23-2.46,1.05-1.64.47h-7.02l-3.16,1.29-6.2,5.15h-3.63l-1.29-1.05-2.34-3.86-1.4-1.53-1.99-.81-4.68-.82-4.68-2.58-3.63,1.99-6.08,5.5,1.29,5.62-5.15,5.27-7.37,3.86-12.05,2.69-10.64,6.2-13.92,5.15-3.28,2.46-6.9,7.72-3.16,2.22-1.99,2.57-.47,5.15,1.05,6.44.11,2.58-9.83,3.74-1.76,3.75.47,4.8,2.45,4.8,1.64,1.75,2.57,1.99,1.41,1.87.7,2.46-.94,1.4-1.87,1.17-3.16,3.04-1.4.7-1.4.94-1.29,2.46-.82,2.81-.11,2.22.94,4.68,2.1,5.15.59,2.69-.82,2.81-1.64,1.76-1.4,1.17-.94,1.28-.35,2.22.23,1.41.7,1.17.47,1.52-.24,1.64-.7,1.05-3.04,2.11-1.05,3.39.12,1.52.93,1.64-.81,3.04,1.05,3.28,4.21,5.73-.23,1.99-2.57,1.99-4.68,2.69-4.56,5.5-3.86,4.8-1.84,3.07,1.68-41.49-10.86-15.93s11.22-7.96,5.43-13.76c-5.79-5.79-19.54-14.12-19.54-14.12,0,0,2.89-26.07-7.24-33.31-10.13-7.24-32.21-7.18-32.21-7.18l-2.9-17.44-10.86-8.32v-7.96s-.73-3.78-7.58-6.23l17.43,2.98s4.34-8.45,7.96-16.65c3.62-8.21,13.51-21.96,31.84-24.86,18.33-2.9,42.46,0,46.32-5.07,3.86-5.07,6.03-28.72,6.03-28.72l5.31,5.79c5.07,5.31,41.25,19.31,41.25,19.31l4.05-11.7,5.02.64,7.84,2.45,4.21.36,3.39-.7,10.06-4.22,4.33-.7,20.71.7,1.52,1.53.82,1.75.58,1.64.82,1.64,3.28,3.98,3.39,3.16,3.74,2.11,16.38,3.51,3.16,1.87,1.99,3.51,2.22,5.5,2.81,5.15,3.63,2.22,3.86,1.52,3.39,3.63,2.69,4.8,1.75,4.91,1.87,19.66,1.29,1.99,1.52,4.45.94,4.91Z"/>
+                    <polygon class="cls-18 map-region" data-region="baku" points="1045.4 382.05 1044.23 384.51 1040.84 383.57 1038.5 384.39 1035.81 382.05 1034.05 378.54 1034.52 375.5 1036.86 377.37 1038.62 376.79 1040.13 375.5 1042.01 375.5 1044.7 378.31 1045.4 382.05"/>
+                       <polygon class="cls-18 map-region" data-region="baku" points="1001.65 352.56 999.42 350.46 997.67 347.88 997.2 342.85 996.03 341.33 993.23 342.26 991 341.09 991 346.71 996.85 354.79 996.03 360.64 999.66 360.87 1002.35 360.17 1003.75 358.65 1003.52 355.72 1001.65 352.56"/>
+                       <path class="cls-18 map-region" data-region="baku" d="M1002.82,399.96l-.59,3.28-3.51-6.79-3.75-5.85-4.56-5.26-9.01-7.37-3.74-2.11-4.09-1.52-8.19-1.17-6.79-2.22-3.63-.47-2.11.23-2.46,1.05-1.64.47h-7.02l-3.16,1.29-6.2,5.15h-3.63l-1.29-1.05-2.34-3.86-1.4-1.53-1.99-.81-4.68-.82-4.68-2.58-3.63,1.99-6.08,5.5,1.29,5.62-5.15,5.27-7.37,3.86-12.05,2.69-10.64,6.2-13.92,5.15-3.28,2.46-6.9,7.72-3.16,2.22-1.99,2.57-.47,5.15,1.05,6.44.11,2.58-9.83,3.74-1.76,3.75.47,4.8,2.45,4.8,1.64,1.75,2.57,1.99,1.41,1.87.7,2.46-.94,1.4-1.87,1.17-3.16,3.04-1.4.7-1.4.94-1.29,2.46-.82,2.81-.11,2.22.94,4.68,2.1,5.15.59,2.69-.82,2.81-1.64,1.76-1.4,1.17-.94,1.28-.35,2.22.23,1.41.7,1.17.47,1.52-.24,1.64-.7,1.05-3.04,2.11-1.05,3.39.12,1.52.93,1.64-.81,3.04,1.05,3.28,4.21,5.73-.23,1.99-2.57,1.99-4.68,2.69-4.56,5.5-3.86,4.8-1.84,3.07,1.68-41.49-10.86-15.93s11.22-7.96,5.43-13.76c-5.79-5.79-19.54-14.12-19.54-14.12,0,0,2.89-26.07-7.24-33.31-10.13-7.24-32.21-7.18-32.21-7.18l-2.9-17.44-10.86-8.32v-7.96s-.73-3.78-7.58-6.23l17.43,2.98s4.34-8.45,7.96-16.65c3.62-8.21,13.51-21.96,31.84-24.86,18.33-2.9,42.46,0,46.32-5.07,3.86-5.07,6.03-28.72,6.03-28.72l5.31,5.79c5.07,5.31,41.25,19.31,41.25,19.31l4.05-11.7,5.02.64,7.84,2.45,4.21.36,3.39-.7,10.06-4.22,4.33-.7,20.71.7,1.52,1.53.82,1.75.58,1.64.82,1.64,3.28,3.98,3.39,3.16,3.74,2.11,16.38,3.51,3.16,1.87,1.99,3.51,2.22,5.5,2.81,5.15,3.63,2.22,3.86,1.52,3.39,3.63,2.69,4.8,1.75,4.91,1.87,19.66,1.29,1.99,1.52,4.45.94,4.91Z"/>
         </g>
-        <path class="cls-11" d="M802.79,468.83s3.98-14.54,3.83-14.99,5.66-8.5,5.66-8.5l-1.49-10.28,6.06-9.17,1.54-11.99,8.5-13.26.84-14.59-1.81-24.35,5.3-5.77,8.23-1.37,8.91-10.11h15.77l4.95-1.19h4.62l9.09,2.38,8.2-3.73,16.69-4.02,3.48-4.77-21.22-7.15-8.37,3.72"/>
+        <path class="cls-11" data-region="baku" d="M802.79,468.83s3.98-14.54,3.83-14.99,5.66-8.5,5.66-8.5l-1.49-10.28,6.06-9.17,1.54-11.99,8.5-13.26.84-14.59-1.81-24.35,5.3-5.77,8.23-1.37,8.91-10.11h15.77l4.95-1.19h4.62l9.09,2.38,8.2-3.73,16.69-4.02,3.48-4.77-21.22-7.15-8.37,3.72"/>
         <polygon class="cls-11" points="863.41 369.24 861.25 362.53 857.52 357.99 863.78 355.08 871.52 354.56 877.38 363.93 874.81 365.96 870.56 368.42 863.41 369.24"/>
         <text class="cls-14" transform="translate(789.43 389.19)"><tspan x="0" y="0">BAKI RETSİ</tspan></text>
         <text class="cls-5" transform="translate(914.41 354.56)"><tspan x="0" y="0">Bakı</tspan></text>
         <text class="cls-5" transform="translate(772.28 367.85)"><tspan x="0" y="0">Abşeron</tspan></text>
       </g>
       <g>
-        <path class="cls-18 map-region" data-region="qerb" d="M885.41,317.98l-4.05,11.7s-36.19-14-41.25-19.31l-5.31-5.79s-2.17,23.65-6.03,28.72c-3.86,5.07-27.98,2.17-46.32,5.07-18.34,2.89-28.23,16.65-31.84,24.86-3.62,8.21-7.96,16.65-7.96,16.65l-17.43-2.98h0c-.99-.35-2.1-.68-3.35-.96-2.89-.65-6.55-1.08-11.15-1.09-.12-.65-.24-1.26-.35-1.81-.84-4.1-16.4,3.5-16.4,3.5l10.61-14.48,1.33-9.65.24-17.86-1.49-16.85-6.11-5.31,4.18-5.31v-11.26s5.31-1.29,4.02-4.51c-1.29-3.22,2.57-8.21,4.98-10.29,2.41-2.09,9.25,1.17,9.25,1.17,0,0,.82-2.82,1.36-5.58.29-1.48.5-2.94.45-3.95,0-.15-.04-.35-.09-.57l4.27-2.49s-.96-19.18,6.27-19.79c7.24-.6,8.32,0,8.32,0v-15.33s8.69-3.62,10.49,1.33c1.81,4.95-4.46,2.9,12.3,8.93s36.91,1.69,36.91,1.69l9.36-10.08,5.17,5.86,1.52,2.22.23.47,1.64,3.98,3.86,3.28,8.31,5.15,3.98-1.05,3.51,3.04,3.28,4.09,3.63,1.99,1.99,2.34-.81,5.26-3.16,8.9-1.17,4.68-.23,2.45.23,2.7.82,1.52,2.34,3.04.58,1.29.12.23,1.28,2.11,3.16,3.04,3.63,2.69,2.46,1.17,7.83.47,3.51.94,2.93,1.64,6.55,5.85.94.47,2.57,1.29,4.11.53Z"/>
+        <path class="cls-18 map-region" data-region="sumqayit" d="M885.41,317.98l-4.05,11.7s-36.19-14-41.25-19.31l-5.31-5.79s-2.17,23.65-6.03,28.72c-3.86,5.07-27.98,2.17-46.32,5.07-18.34,2.89-28.23,16.65-31.84,24.86-3.62,8.21-7.96,16.65-7.96,16.65l-17.43-2.98h0c-.99-.35-2.1-.68-3.35-.96-2.89-.65-6.55-1.08-11.15-1.09-.12-.65-.24-1.26-.35-1.81-.84-4.1-16.4,3.5-16.4,3.5l10.61-14.48,1.33-9.65.24-17.86-1.49-16.85-6.11-5.31,4.18-5.31v-11.26s5.31-1.29,4.02-4.51c-1.29-3.22,2.57-8.21,4.98-10.29,2.41-2.09,9.25,1.17,9.25,1.17,0,0,.82-2.82,1.36-5.58.29-1.48.5-2.94.45-3.95,0-.15-.04-.35-.09-.57l4.27-2.49s-.96-19.18,6.27-19.79c7.24-.6,8.32,0,8.32,0v-15.33s8.69-3.62,10.49,1.33c1.81,4.95-4.46,2.9,12.3,8.93s36.91,1.69,36.91,1.69l9.36-10.08,5.17,5.86,1.52,2.22.23.47,1.64,3.98,3.86,3.28,8.31,5.15,3.98-1.05,3.51,3.04,3.28,4.09,3.63,1.99,1.99,2.34-.81,5.26-3.16,8.9-1.17,4.68-.23,2.45.23,2.7.82,1.52,2.34,3.04.58,1.29.12.23,1.28,2.11,3.16,3.04,3.63,2.69,2.46,1.17,7.83.47,3.51.94,2.93,1.64,6.55,5.85.94.47,2.57,1.29,4.11.53Z"/>
         <path class="cls-11" d="M722.36,277.13l9.12,2.91,9.35,7.01,4.26,4.05s14.35,16.67,18.97,18.98,9.8,3.29,9.8,3.29l17.58,18.22,9.37,4.98"/>
         <polyline class="cls-11" points="834.8 304.59 840.3 295.99 844.73 294.97"/>
         <text class="cls-13" transform="translate(719.88 306.54)"><tspan x="0" y="0">SUM</tspan><tspan class="cls-30" x="28.91" y="0">Q</tspan><tspan class="cls-26" x="39.03" y="0">A</tspan><tspan class="cls-20" x="48.1" y="0">Y</tspan><tspan x="56.61" y="0">IT RETSİ</tspan></text>
@@ -243,8 +249,86 @@
           </svg>
           
           <!-- Detailed Region Map -->
-          <div v-if="selectedRegion" class="region-detail-container">
+          <div v-if="selectedRegion && !showGallery && !showMapView" class="region-detail-container">
+            <!-- Region Header -->
+        
+            
             <img :src="`/map/${getRegionFileName(selectedRegion)}`" :alt="getRegionName(selectedRegion)" class="region-detail-image" />
+            
+            <!-- Yarimstansiya Pinpoints on Individual Region Map -->
+            <div v-for="pinpoint in getVisiblePinpoints()" 
+                 :key="pinpoint.id" 
+                 class="pinpoint-overlay"
+                 :style="{ left: pinpoint.x + '%', top: pinpoint.y + '%' }"
+                 @click.stop="handlePinPointClick(pinpoint)">
+              <img src="/icons/yarimstansiya.svg" 
+                   alt="Yarımstansiya" 
+                   class="pinpoint-icon" />
+            </div>
+          </div>
+
+          <!-- Google Maps View -->
+          <div v-if="selectedRegion && showMapView" class="map-view-container">
+            <!-- Map Header -->
+            <!-- <div class="map-header">
+              <h3 class="map-title">{{ getRegionName(selectedRegion) }}</h3>
+            </div> -->
+            
+            <img :src="`/googlemaps/${getGoogleMapFileName(selectedRegion)}`" 
+                 :alt="`${getRegionName(selectedRegion)} Google Map`" 
+                 class="map-view-image" />
+            
+            <!-- Yarimstansiya Pinpoints on Google Map -->
+            <div v-for="pinpoint in getVisiblePinpoints()" 
+                 :key="pinpoint.id" 
+                 class="pinpoint-overlay"
+                 :style="{ left: pinpoint.x + '%', top: pinpoint.y + '%' }"
+                 @click.stop="handlePinPointClick(pinpoint)">
+              <img src="/icons/yarimstansiyagooglemap.svg" 
+                   alt="Yarımstansiya" 
+                   class="pinpoint-icon" />
+            </div>
+          </div>
+
+          <!-- Gallery Layout (replaces region map when pinpoint is clicked) -->
+          <div v-if="showGallery" class="gallery-container">
+            <!-- Yarımstansiya Header -->
+            <div class="yarimstansiya-header">
+              <h3 class="yarimstansiya-title">{{ selectedPinpoint?.name }}</h3>
+            </div>
+            
+            <div class="gallery-content">
+              <!-- Left side - Main large image -->
+              <div class="gallery-main">
+                <div class="main-image-container">
+                  <img v-if="selectedPinpoint?.images?.length > 0" 
+                       :src="selectedPinpoint.images[currentImageIndex]" 
+                       :alt="selectedPinpoint.name"
+                       class="main-image" />
+                  
+                  <!-- Navigation Arrows -->
+                  <button v-if="selectedPinpoint?.images?.length > 1" 
+                          class="gallery-nav gallery-prev" 
+                          @click="prevImage">‹</button>
+                  <button v-if="selectedPinpoint?.images?.length > 1" 
+                          class="gallery-nav gallery-next" 
+                          @click="nextImage">›</button>
+                </div>
+              </div>
+              
+              <!-- Right side - Thumbnail images -->
+              <div class="gallery-thumbnails">
+                <div v-for="(image, index) in selectedPinpoint?.images?.slice(0, 3)" 
+                     :key="index"
+                     class="thumbnail-container"
+                     :class="{ active: index === currentImageIndex }"
+                     @click="currentImageIndex = index">
+                  <img :src="image" 
+                       :alt="`${selectedPinpoint.name} - Image ${index + 1}`"
+                       class="thumbnail-image" />
+                </div>
+              </div>
+            </div>
           </div>
         </div>
         <div class="map-caption">"Azərişıq" ASC RETSİ-lər üzrə inzibati xəritəsi</div>
@@ -302,6 +386,8 @@
       </div>
     </div>
   </div>
+
+
 </template>
 
 <script setup>
@@ -318,6 +404,139 @@ const substationData = ref({
 
 const hoverRegion = ref(null)
 const selectedRegion = ref(null)
+const selectedPinpoint = ref(null)
+const showGallery = ref(false)
+const showMapView = ref(false)
+const currentImageIndex = ref(0)
+
+// Yarimstansiya pinpoints data - EASY TO EDIT
+// Coordinates are relative to individual region SVG maps (not main map)
+const pinpoints = ref([
+  // Baku Region Pinpoints
+  { 
+    id: 'baku-1', 
+    x: 60,  // 60% from left of SVG
+    y: 40,  // 28% from top of SVG
+    region: 'baku',
+    name: 'Abşeron1 Yarımstansiyası',
+    images: [
+      '/imgs/28-6385070 1.jpg',
+      '/imgs/28-0223635 1.jpg',
+      '/imgs/28-1805178 1.jpg',
+      '/imgs/28-4737145 1.jpg',
+    ]
+  },
+  { 
+    id: 'baku-2', 
+    x: 51,  // 51% from left
+    y: 46,  // 26% from top
+    region: 'baku',
+    name: 'Bakı Şəhər Yarımstansiyası',
+    images: [
+      '/imgs/28-6385070 1.jpg',
+      '/imgs/28-0223635 1.jpg',
+      '/imgs/28-1805178 1.jpg',
+      '/imgs/28-4737145 1.jpg'
+    ]
+  },
+  { 
+    id: 'baku-3', 
+    x: 25,  // 25% from left
+    y: 44,  // 34% from top
+    region: 'baku',
+    name: 'Binəqədi Yarımstansiyası',
+    images: [
+      '/imgs/28-6385070 1.jpg',
+      '/imgs/28-0223635 1.jpg',
+      '/imgs/28-1805178 1.jpg'
+    ]
+  },
+  { 
+    id: 'baku-4', 
+    x: 37,  // 37% from left
+    y: 52,  // 52% from top
+    region: 'baku',
+    name: 'Bakı Şəhər Yarımstansiyası1',
+    images: [
+      '/imgs/28-6385070 1.jpg',
+      '/imgs/28-4737145 1.jpg',
+      '/imgs/28-6385070 1.jpg'
+    ]
+  },
+  { 
+    id: 'baku-5', 
+    x: 30,  // 30% from left
+    y: 40,  // 30% from top
+    region: 'baku',
+    name: 'Bakı Şəhər Yarımstansiyası',
+    images: [
+      '/imgs/28-6385070 1.jpg',
+      '/imgs/28-0223635 1.jpg',
+      '/imgs/28-1805178 1.jpg',
+      '/imgs/28-4737145 1.jpg'
+    ]
+  },
+  { 
+    id: 'baku-6', 
+    x: 35,  // 35% from left
+    y: 45,  // 35% from top
+    region: 'baku',
+    name: 'Bakı Şəhər Yarımstansiyası',
+    images: [
+      '/imgs/28-6385070 1.jpg',
+      '/imgs/28-1805178 1.jpg',
+      '/imgs/28-4737145 1.jpg'
+    ]
+  },
+  // Sumqayit Region Pinpoints  
+  { 
+    id: 'sumqayit-1', 
+    x: 18,  // 18% from left
+    y: 12,  // 12% from top
+    region: 'sumqayit',
+    name: 'Sumqayıt Kimya Yarımstansiyası',
+    images: [
+      '/imgs/28-6385070 1.jpg',
+      '/imgs/28-4737145 1.jpg',
+      '/imgs/28-6385070 1.jpg',
+      '/imgs/28-0223635 1.jpg'
+    ]
+  },
+  // Xacmaz Region Pinpoints
+  { 
+    id: 'xacmaz-1', 
+    x: 25,  // 25% from left
+    y: 18,  // 18% from top
+    region: 'xacmaz',
+    name: 'Xaçmaz Mərkəzi Yarımstansiyası',
+    images: [
+      '/imgs/28-1805178 1.jpg',
+      '/imgs/28-4737145 1.jpg'
+    ]
+  }
+])
+
+// Helper function to add new pinpoints easily
+const addPinpoint = (x, y, region, name, images) => {
+  const id = `${region}-${pinpoints.value.filter(p => p.region === region).length + 1}`
+  pinpoints.value.push({ id, x, y, region, name, images })
+}
+
+// Helper function to add images to existing yarımstansiya
+const addImagesToYarimstansiya = (yarimstansiyaId, newImages) => {
+  const pinpoint = pinpoints.value.find(p => p.id === yarimstansiyaId)
+  if (pinpoint) {
+    pinpoint.images = [...pinpoint.images, ...newImages]
+  }
+}
+
+// Helper function to update images for yarımstansiya
+const updateYarimstansiyaImages = (yarimstansiyaId, images) => {
+  const pinpoint = pinpoints.value.find(p => p.id === yarimstansiyaId)
+  if (pinpoint) {
+    pinpoint.images = images
+  }
+}
 
 const mapRegions = [
   { name: 'Bakı RETSİ', left: 75, top: 30, color: 'rgba(59, 130, 246, 0.3)' },
@@ -343,7 +562,13 @@ const handleMapClick = (event) => {
   if (target.classList.contains('map-region')) {
     const region = target.getAttribute('data-region')
     if (region) {
-      selectedRegion.value = region
+      // Check if region has an individual SVG file
+      const fileName = getRegionFileName(region)
+      if (fileName && fileName !== `${region}.svg`) {
+        selectedRegion.value = region
+      } else {
+        console.log(`Individual map not available for region: ${region}`)
+      }
     }
   }
 }
@@ -360,11 +585,70 @@ const handleRightClick = () => {
 
 const handleMapButtonClick = () => {
   // Handle map button click
-  console.log('Map button clicked')
+  toggleMapView()
 }
 
 const closeRegionModal = () => {
   selectedRegion.value = null
+  showGallery.value = false
+  showMapView.value = false
+  selectedPinpoint.value = null
+  currentImageIndex.value = 0
+}
+
+// Pinpoint functions
+const handlePinPointClick = (pinpoint) => {
+  selectedPinpoint.value = pinpoint
+  currentImageIndex.value = 0
+  showGallery.value = true
+  // Hide map view when showing gallery
+  showMapView.value = false
+}
+
+const closeGallery = () => {
+  showGallery.value = false
+  selectedPinpoint.value = null
+  currentImageIndex.value = 0
+}
+
+const toggleMapView = () => {
+  showMapView.value = !showMapView.value
+  // Hide gallery when switching to map view
+  if (showMapView.value) {
+    showGallery.value = false
+    selectedPinpoint.value = null
+    currentImageIndex.value = 0
+  }
+}
+
+const closeMapView = () => {
+  showMapView.value = false
+  // Reset gallery state when closing map view
+  showGallery.value = false
+  selectedPinpoint.value = null
+  currentImageIndex.value = 0
+}
+
+const nextImage = () => {
+  if (selectedPinpoint.value && selectedPinpoint.value.images.length > 0) {
+    currentImageIndex.value = (currentImageIndex.value + 1) % selectedPinpoint.value.images.length
+  }
+}
+
+const prevImage = () => {
+  if (selectedPinpoint.value && selectedPinpoint.value.images.length > 0) {
+    currentImageIndex.value = currentImageIndex.value === 0 
+      ? selectedPinpoint.value.images.length - 1 
+      : currentImageIndex.value - 1
+  }
+}
+
+// Helper to get visible pinpoints based on current view
+const getVisiblePinpoints = () => {
+  if (selectedRegion.value) {
+    return pinpoints.value.filter(p => p.region === selectedRegion.value)
+  }
+  return pinpoints.value
 }
 
 const getRegionName = (region) => {
@@ -374,6 +658,7 @@ const getRegionName = (region) => {
     'xacmaz': 'Xaçmaz RETSİ',
     'sirvan': 'Şirvan RETSİ',
     'qerb': 'Qərb RETSİ',
+    'simalqerb': 'Şimal Qərb RETSİ',
     'merkezi-aran': 'Mərkəzi Aran RETSİ',
     'aran': 'Aran RETSİ',
     'cenub': 'Cənub RETSİ',
@@ -386,10 +671,11 @@ const getRegionName = (region) => {
 const getRegionFileName = (region) => {
   const fileNames = {
     'baku': 'BAkuRetsi.svg',
-    'sumqayit': 'SumqayitRetsi.svg',
+    'sumqayit': 'SUmqayitRetsi.svg',
     'xacmaz': 'XAcmazRetsi.svg',
-    'sirvan': 'SirvanRetsi.svg',
+    'sirvan': 'SHirvanREtsi.svg',
     'qerb': 'QErbREtsi.svg',
+    'simalqerb': 'ShimalQErbREtsi.svg',
     'merkezi-aran': 'MerKEziARanREtsi.svg',
     'aran': 'ARanRetsi.svg',
     'cenub': 'CEnubRetsi.svg',
@@ -397,6 +683,22 @@ const getRegionFileName = (region) => {
     'naxcivan': 'NaxcivanREtsi.svg'
   }
   return fileNames[region] || `${region}.svg`
+}
+
+const getGoogleMapFileName = (region) => {
+  const mapFileNames = {
+    'baku': 'bakugooglemap.png',
+    'sumqayit': 'sumqayitgooglemap.png',
+    'xacmaz': 'xacmazgooglemap.png',
+    'qerb': 'qerbgooglemap.png',
+    'simalqerb': 'simalqerbgooglemap.png',
+    'merkezi-aran': 'merkeziarangooglemap.png',
+    'aran': 'merkeziarangooglemap.png', // Using same as merkezi-aran for now
+    'cenub': 'merkeziarangooglemap.png', // Using same as merkezi-aran for now
+    'qarabag': 'qarabaggooglemap.png',
+    'naxcivan': 'naxcivangooglemap.png'
+  }
+  return mapFileNames[region] || 'bakugooglemap.png'
 }
 
 const fetchData = async () => {
@@ -571,12 +873,12 @@ onMounted(() => {
 }
 
 .map-caption {
-  text-align: center;
-  color: #6B7280;
-  font-size: 0.875rem;
-  font-family: 'Montserrat', sans-serif;
-  margin-top: 12px;
-  font-weight: 400;
+  text-align: start;
+    color: #31B1F0;
+    font-size: 1.1rem;
+    font-family: 'Montserrat', sans-serif;
+    margin-top: 12px;
+    font-weight: 700;
 }
 
 .map-regions {
@@ -617,7 +919,7 @@ onMounted(() => {
   position: absolute;
   top: 20px;
   left: 20px;
-  z-index: 10;
+  z-index: 30;
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: 1fr 1fr;
@@ -663,14 +965,15 @@ onMounted(() => {
 
 /* Region Detail Container */
 .region-detail-container {
-  width: 50%;
+  width: 55%;
   margin: 0 auto;
+  margin-top: 50px;
   height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
   border-radius: 12px;
-  animation: fadeIn 0.5s ease-out;
+  /* animation: fadeIn 0.5s ease-out; */
 }
 
 .region-detail-image {
@@ -1182,6 +1485,254 @@ onMounted(() => {
   
   .donut-center {
     font-size: 2rem;
+  }
+}
+
+/* Region and Yarımstansiya Headers */
+.region-header,
+.yarimstansiya-header,
+.map-header {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 30;
+  color: #2098d4;
+  padding: 12px 20px;
+  border-radius: 8px;
+}
+
+.region-title,
+.yarimstansiya-title,
+.map-title {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 900;
+  font-family: 'Montserrat', sans-serif;
+  white-space: nowrap;
+}
+
+/* Map View Styles */
+.map-view-container {
+  width: 85%;
+  margin: 0 auto;
+  margin-top: 100px;
+  height: 100%;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 0;
+}
+
+.map-view-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* Pinpoint Styles */
+.pinpoint-overlay {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+  z-index: 10;
+}
+
+ 
+
+.pinpoint-icon {
+  width: 48px;
+  height: 64px;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+/* Gallery Layout Styles */
+.gallery-container {
+  border-radius: 16px;
+  width: 100%;
+  margin-top: 50px;
+  height: 100%;
+  overflow: hidden;
+  animation: fadeIn 0.3s ease;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.gallery-header {
+  padding: 20px 24px;
+  border-bottom: 1px solid #e5e7eb;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(135deg, #2098d4, #1e88e5);
+  color: white;
+}
+
+.gallery-title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.gallery-close-btn {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: background-color 0.2s ease;
+}
+
+.gallery-close-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.gallery-content {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+
+.gallery-main {
+  flex: 2;
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.main-image-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.main-image {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.gallery-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  border: none;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  font-size: 1.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  z-index: 10;
+}
+
+.gallery-nav:hover {
+  background: rgba(0, 0, 0, 0.9);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.gallery-prev {
+  left: 16px;
+}
+
+.gallery-next {
+  right: 16px;
+}
+
+.gallery-thumbnails {
+  flex: 1;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow-y: auto;
+}
+
+.thumbnail-container {
+  cursor: pointer;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: all 0.2s ease;
+  border: 3px solid transparent;
+}
+
+.thumbnail-container:hover {
+  transform: scale(1.05);
+}
+
+.thumbnail-container.active {
+  border-color: #2098d4;
+  box-shadow: 0 4px 12px rgba(32, 152, 212, 0.3);
+}
+
+.thumbnail-image {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Responsive adjustments for gallery */
+@media (max-width: 768px) {
+  .gallery-content {
+    flex-direction: column;
+  }
+  
+  .gallery-main {
+    flex: 1;
+    padding: 16px;
+  }
+  
+  .gallery-thumbnails {
+    flex: none;
+    padding: 16px;
+    max-height: 200px;
+    overflow-x: auto;
+    flex-direction: row;
+  }
+  
+  .thumbnail-container {
+    min-width: 120px;
+  }
+  
+  .gallery-nav {
+    width: 40px;
+    height: 40px;
+    font-size: 1.25rem;
+  }
+  
+  .gallery-prev {
+    left: 8px;
+  }
+  
+  .gallery-next {
+    right: 8px;
   }
 }
 </style> 
