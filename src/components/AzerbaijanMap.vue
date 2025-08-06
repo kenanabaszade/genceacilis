@@ -354,7 +354,7 @@
                   </th>
                   <th class="table-header-light-blue">
                     <div class="count-badge">
-                      {{ selectedPinpoint ? '9' : (selectedRegion && !showGallery ? getRegionSubstationCount(selectedRegion) : '200') }}
+                      {{ selectedPinpoint ? '9' : (selectedRegion && !showGallery ? getRegionSubstationCount(selectedRegion) : '31') }}
                     </div>
                   </th>
                 </tr>
@@ -958,19 +958,19 @@ const fetchData = async () => {
     console.error('Error fetching data:', error)
     substationData.value = {
       butunBolgelerUzre: {
-        total: 200,
+        total: 31,
         regions: [
-          { name: "Bakı RETSİ", count: 114 },
-          { name: "Sumqayıt RETSİ", count: 7 },
-          { name: "Xaçmaz RETSİ", count: 13 },
-          { name: "Şirvan RETSİ", count: 13 },
-          { name: "Şimal Qərb RETSİ", count: 13 },
-          { name: "Qərb RETSİ", count: 10 },
-          { name: "Mərkəzi Aran RETSİ", count: 8 },
-          { name: "Aran RETSİ", count: 1 },
-          { name: "Qarabağ RETSİ", count: 6 },
-          { name: "Naxçıvan RETSİ", count: 2 },
-          { name: "Cənub RETSİ", count: 11 }
+          { name: "Bakı RETSİ", count: 6 },
+          { name: "Sumqayıt RETSİ", count: 1 },
+          { name: "Xaçmaz RETSİ", count: 1 },
+          { name: "Şirvan RETSİ", count: 2 },
+          { name: "Şimal Qərb RETSİ", count: 0 },
+          { name: "Qərb RETSİ", count: 4 },
+          { name: "Mərkəzi Aran RETSİ", count: 2 },
+          { name: "Aran RETSİ", count: 5 },
+          { name: "Qarabağ RETSİ", count: 9 },
+          { name: "Naxçıvan RETSİ", count: 0 },
+          { name: "Cənub RETSİ", count: 1 }
         ]
       },
       yarimstansiyalarUzreArtim: {
