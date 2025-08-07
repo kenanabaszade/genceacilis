@@ -18,27 +18,7 @@
       <!-- Left side - Map -->
       <div class="map-section">
         <div class="map-container">
-          <!-- Control Buttons - Only show when viewing individual regions -->
-           <div class="d-flex justify-content-between">
-            <div v-if="selectedRegion" class="control-buttons">
-            <button class="control-btn left-btn" @click="handleLeftClick">
-              <img src="/icons/leftarrow.svg" alt="Left" class="control-icon" />
-            </button>
-            <button class="control-btn right-btn" @click="handleRightClick">
-              <img src="/icons/rightarrow.svg" alt="Right" class="control-icon" />
-            </button>
 
-            <button class="control-btn home-btn" @click="closeRegionModal">
-              <img src="/icons/home.svg" alt="Home" class="control-icon" />
-            </button>
-            <button class="control-btn back-btn" @click="handleBackButton">
-              <img src="/icons/leftarrowwithbg.svg" alt="Go Back" class="control-icon" />
-            </button>
-          </div>
-            <div class="region-header" v-if="selectedRegion && !showGallery">
-              <h3 class="region-title">{{ getRegionName(selectedRegion) }}</h3>
-            </div>
-           </div>
          
           
           <!-- Main Azerbaijan Map -->
@@ -265,24 +245,42 @@
 
           <!-- Google Maps View -->
           <div v-show="selectedRegion && !showGallery" class="map-view-container" :class="{ 'map-view-enter': selectedRegion && !showGallery }">
-            <!-- Map Header -->
-            <!-- <div class="map-header">
-              <h3 class="map-title">{{ getRegionName(selectedRegion) }}</h3>
-            </div> -->
+            <!-- Map Header with Controls -->
+            <div class="map-header-container">
+              <div class="map-controls">
+                <button class="map-control-btn home-btn" @click="closeRegionModal">
+                  <img src="/icons/home.svg" alt="Home" class="control-icon" />
+                </button>
+                <button class="map-control-btn back-btn" @click="handleBackButton">
+                  <img src="/icons/leftarrowwithbg.svg" alt="Go Back" class="control-icon" />
+                </button>
+                <button class="map-control-btn left-btn" @click="handleLeftClick">
+                  <img src="/icons/leftarrow.svg" alt="Left" class="control-icon" />
+                </button>
+                <button class="map-control-btn right-btn" @click="handleRightClick">
+                  <img src="/icons/rightarrow.svg" alt="Right" class="control-icon" />
+                </button>
+              </div>
+              <div class="map-title-container">
+                <h3 class="map-title">{{ getRegionName(selectedRegion) }}</h3>
+              </div>
+            </div>
             
-            <img :src="`/googlemaps/${getGoogleMapFileName(selectedRegion)}`" 
-                 :alt="`${getRegionName(selectedRegion)} Google Map`" 
-                 class="map-view-image" />
-            
-            <!-- Yarimstansiya Pinpoints on Google Map -->
-            <div v-for="pinpoint in getVisiblePinpoints()" 
-                 :key="pinpoint.id" 
-                 class="pinpoint-overlay"
-                 :style="{ left: pinpoint.x + '%', top: pinpoint.y + '%' }"
-                 @click.stop="handlePinPointClick(pinpoint)">
-              <img src="/icons/yarimstansiyagooglemap.svg" 
-                   alt="Yarımstansiya" 
-                   class="pinpoint-icon" />
+            <div class="map-content">
+              <img :src="`/googlemaps/${getGoogleMapFileName(selectedRegion)}`" 
+                   :alt="`${getRegionName(selectedRegion)} Google Map`" 
+                   class="map-view-image" />
+              
+              <!-- Yarimstansiya Pinpoints on Google Map -->
+              <div v-for="pinpoint in getVisiblePinpoints()" 
+                   :key="pinpoint.id" 
+                   class="pinpoint-overlay"
+                   :style="{ left: pinpoint.x + '%', top: pinpoint.y + '%' }"
+                   @click.stop="handlePinPointClick(pinpoint)">
+                <img src="/icons/yarimstansiyagooglemap.svg" 
+                     alt="Yarımstansiya" 
+                     class="pinpoint-icon" />
+              </div>
             </div>
           </div>
 
@@ -290,9 +288,25 @@
 
           <!-- Gallery Layout (replaces region map when pinpoint is clicked) -->
           <div v-if="showGallery" class="gallery-container">
-            <!-- Yarımstansiya Header -->
-            <div class="yarimstansiya-header">
-              <h3 class="yarimstansiya-title">{{ selectedPinpoint?.name }}</h3>
+            <!-- Gallery Header with Controls -->
+            <div class="gallery-header-container">
+              <div class="gallery-controls">
+                <button class="gallery-control-btn home-btn" @click="closeRegionModal">
+                  <img src="/icons/home.svg" alt="Home" class="control-icon" />
+                </button>
+                <button class="gallery-control-btn back-btn" @click="handleBackButton">
+                  <img src="/icons/leftarrowwithbg.svg" alt="Go Back" class="control-icon" />
+                </button>
+                <button class="gallery-control-btn left-btn" @click="handleLeftClick">
+                  <img src="/icons/leftarrow.svg" alt="Left" class="control-icon" />
+                </button>
+                <button class="gallery-control-btn right-btn" @click="handleRightClick">
+                  <img src="/icons/rightarrow.svg" alt="Right" class="control-icon" />
+                </button>
+              </div>
+              <div class="gallery-title-container">
+                <h3 class="gallery-title">{{ selectedPinpoint?.name }}</h3>
+              </div>
             </div>
             
             <div class="gallery-content">
@@ -302,15 +316,20 @@
                   <img v-if="selectedPinpoint?.images?.length > 0" 
                        :src="selectedPinpoint.images[currentImageIndex]" 
                        :alt="selectedPinpoint.name"
-                       class="main-image" />
+                       class="main-image"
+                       @click="openImageModal" />
                   
                   <!-- Navigation Arrows -->
                   <button v-if="selectedPinpoint?.images?.length > 1" 
                           class="gallery-nav gallery-prev" 
-                          @click="prevImage">‹</button>
+                          @click="prevImage">
+                    <img src="/icons/rightcontrol.svg" alt="Previous" class="nav-icon" />
+                  </button>
                   <button v-if="selectedPinpoint?.images?.length > 1" 
                           class="gallery-nav gallery-next" 
-                          @click="nextImage">›</button>
+                          @click="nextImage">
+                    <img src="/icons/leftcontrol.svg" alt="Next" class="nav-icon" />
+                  </button>
                 </div>
               </div>
               
@@ -329,7 +348,7 @@
             </div>
           </div>
         </div>
-        <div class="map-caption">"Azərişıq" ASC RETSİ-lər üzrə inzibati xəritəsi</div>
+        <div v-if="!selectedRegion" class="map-caption">"Azərişıq" ASC RETSİ-lər üzrə inzibati xəritəsi</div>
       </div>
 
 
@@ -352,7 +371,7 @@
                   <th class="table-header-light-blue">
                     {{ selectedPinpoint ? 'BMKZ Y/S 110/35/6 kV' : 'Yenidən Qurulan Yarımstansiyalar' }}
                   </th>
-                  <th class="table-header-light-blue">
+                  <th class="table-header-light-blue" style="text-align: right !important;">
                     <div class="count-badge">
                       {{ selectedPinpoint ? '9' : (selectedRegion && !showGallery ? getRegionSubstationCount(selectedRegion) : '31') }}
                     </div>
@@ -387,23 +406,60 @@
         </div>
 
         <!-- Yarımstansiyalar üzrə artım statistikaları -->
-        <div class="stat-card statistika-card" style="box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 23px 0px;">
+        <!-- <div class="stat-card statistika-card" style="box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 23px 0px;">
           <h3 class="card-title">Yarımstansiyalar üzrə artım statistikalar</h3>
           
           <div class="charts-container">
-            <!-- Bar Chart -->
+             
             <div class="bar-chart-section">
               <BarChart :data="substationData.yarimstansiyalarUzreArtim" />
             </div>
 
-            <!-- Donut Chart -->
+            
             <div class="donut-chart-section">
               <DonutChart :data="substationData.yarimstansiyalarUzreArtim" />
               <h4 class="donut-title">Artım nisbəti</h4>
             </div>
           </div>
-        </div>
+        </div> -->
       </div>
+    </div>
+  </div>
+
+  <!-- Image Modal -->
+  <div v-if="showImageModal" class="image-modal" @click="closeImageModal">
+    <div class="modal-content" 
+         @click.stop
+         @mousedown="startDrag"
+         @mousemove="onDrag"
+         @mouseup="endDrag"
+         @mouseleave="endDrag"
+         @touchstart="startDrag"
+         @touchmove="onDrag"
+         @touchend="endDrag">
+      
+      <!-- Image Counter -->
+      <div class="image-counter">
+        {{ currentImageIndex + 1 }} / {{ selectedPinpoint?.images?.length }}
+      </div>
+      
+      <img v-if="selectedPinpoint?.images?.length > 0" 
+           :src="selectedPinpoint.images[currentImageIndex]" 
+           :alt="selectedPinpoint.name"
+           class="modal-image"
+           :key="currentImageIndex" />
+      
+      <!-- Modal Navigation Arrows -->
+      <button v-if="selectedPinpoint?.images?.length > 1" 
+              class="modal-nav modal-prev" 
+              @click="prevImage">
+        <img src="/icons/rightcontrol.svg" alt="Previous" class="nav-icon" />
+      </button>
+      <button v-if="selectedPinpoint?.images?.length > 1" 
+              class="modal-nav modal-next" 
+              @click="nextImage">
+        <img src="/icons/leftcontrol.svg" alt="Next" class="nav-icon" />
+      </button>
     </div>
   </div>
 
@@ -427,7 +483,11 @@ const selectedRegion = ref(null)
 const selectedPinpoint = ref(null)
 const showGallery = ref(false)
 const showMapView = ref(false)
+const showImageModal = ref(false)
 const currentImageIndex = ref(0)
+const isDragging = ref(false)
+const dragStartX = ref(0)
+const dragCurrentX = ref(0)
 const isZoomed = ref(false)
 const zoomTransform = ref({ scale: 1, translateX: 0, translateY: 0 })
 const originalViewBox = ref('0 0 1046.41 834.24')
@@ -441,12 +501,11 @@ const pinpoints = ref([
     x: 60,  // 60% from left of SVG
     y: 40,  // 28% from top of SVG
     region: 'baku',
-    name: 'Abşeron1 Yarımstansiyası',
+    name: 'Abşeron Əliağavahid',
     images: [
-      '/imgs/28-6385070 1.jpg',
-      '/imgs/28-0223635 1.jpg',
-      '/imgs/28-1805178 1.jpg',
-      '/imgs/28-4737145 1.jpg',
+      '/imgs/baku/abseron-eliagavahid-ys/1.jpg',
+      '/imgs/baku/abseron-eliagavahid-ys/2.jpg',
+      '/imgs/baku/abseron-eliagavahid-ys/3.jpg',
     ]
   },
   { 
@@ -454,12 +513,11 @@ const pinpoints = ref([
     x: 51,  // 51% from left
     y: 46,  // 26% from top
     region: 'baku',
-    name: 'Bakı Şəhər Yarımstansiyası',
+    name: 'Nərimanov Təbriz',
     images: [
-      '/imgs/28-6385070 1.jpg',
-      '/imgs/28-0223635 1.jpg',
-      '/imgs/28-1805178 1.jpg',
-      '/imgs/28-4737145 1.jpg'
+      '/imgs/baku/nerimanov-tebriz-ys/1.jpg',
+      '/imgs/baku/nerimanov-tebriz-ys/2.jpg',
+      '/imgs/baku/nerimanov-tebriz-ys/3.jpg'
     ]
   },
   { 
@@ -467,11 +525,11 @@ const pinpoints = ref([
     x: 25,  // 25% from left
     y: 44,  // 34% from top
     region: 'baku',
-    name: 'Binəqədi Yarımstansiyası',
+    name: 'Sabunçu 34',
     images: [
-      '/imgs/28-6385070 1.jpg',
-      '/imgs/28-0223635 1.jpg',
-      '/imgs/28-1805178 1.jpg'
+      '/imgs/baku/sabuncu-34-ys/1.jpg',
+      '/imgs/baku/sabuncu-34-ys/2.jpg',
+      '/imgs/baku/sabuncu-34-ys/3.jpg'
     ]
   },
   { 
@@ -479,11 +537,11 @@ const pinpoints = ref([
     x: 37,  // 37% from left
     y: 52,  // 52% from top
     region: 'baku',
-    name: 'Bakı Şəhər Yarımstansiyası1',
+    name: 'Sabunçu Pirsagi',
     images: [
-      '/imgs/28-6385070 1.jpg',
-      '/imgs/28-4737145 1.jpg',
-      '/imgs/28-6385070 1.jpg'
+      '/imgs/baku/sabuncu-pirsagi-ys/1.jpg',
+      '/imgs/baku/sabuncu-pirsagi-ys/2.jpg',
+      '/imgs/baku/sabuncu-pirsagi-ys/3.jpg'
     ]
   },
   { 
@@ -491,12 +549,11 @@ const pinpoints = ref([
     x: 30,  // 30% from left
     y: 40,  // 30% from top
     region: 'baku',
-    name: 'Bakı Şəhər Yarımstansiyası',
+    name: 'Səbail Badamdar',
     images: [
-      '/imgs/28-6385070 1.jpg',
-      '/imgs/28-0223635 1.jpg',
-      '/imgs/28-1805178 1.jpg',
-      '/imgs/28-4737145 1.jpg'
+      '/imgs/baku/sebail-badamdar-ys/1.jpg',
+      '/imgs/baku/sebail-badamdar-ys/2.jpg',
+      '/imgs/baku/sebail-badamdar-ys/3.jpg'
     ]
   },
   { 
@@ -504,11 +561,11 @@ const pinpoints = ref([
     x: 35,  // 35% from left
     y: 45,  // 35% from top
     region: 'baku',
-    name: 'Bakı Şəhər Yarımstansiyası',
+    name: 'Səbail Liman2',
     images: [
-      '/imgs/28-6385070 1.jpg',
-      '/imgs/28-1805178 1.jpg',
-      '/imgs/28-4737145 1.jpg'
+      '/imgs/baku/sebail-liman2-ys/1.jpg',
+      '/imgs/baku/sebail-liman2-ys/2.jpg',
+      '/imgs/baku/sebail-liman2-ys/3.jpg'
     ]
   },
   // Sumqayit Region Pinpoints  
@@ -688,33 +745,51 @@ const regionOrder = [
 const handleLeftClick = () => {
   if (!selectedRegion.value) return
   
-  const currentIndex = regionOrder.indexOf(selectedRegion.value)
-  const prevIndex = currentIndex === 0 ? regionOrder.length - 1 : currentIndex - 1
-  selectedRegion.value = regionOrder[prevIndex]
-  
-  // Keep gallery open and reset image index when changing regions
-  currentImageIndex.value = 0
-  // Maintain Google Maps view when navigating
-  if (!showGallery.value) {
+  if (showGallery.value) {
+    // In gallery view: navigate between yarımstansiyalar in current region
+    const regionPinpoints = pinpoints.value.filter(p => p.region === selectedRegion.value)
+    const currentPinpointIndex = regionPinpoints.findIndex(p => p.id === selectedPinpoint.value?.id)
+    const prevIndex = currentPinpointIndex === 0 ? regionPinpoints.length - 1 : currentPinpointIndex - 1
+    const prevPinpoint = regionPinpoints[prevIndex]
+    
+    if (prevPinpoint) {
+      selectedPinpoint.value = prevPinpoint
+      currentImageIndex.value = 0
+    }
+  } else {
+    // In Google Map view: navigate between regions
+    const currentIndex = regionOrder.indexOf(selectedRegion.value)
+    const prevIndex = currentIndex === 0 ? regionOrder.length - 1 : currentIndex - 1
+    selectedRegion.value = regionOrder[prevIndex]
+    
+    // Maintain Google Maps view when navigating
     showMapView.value = true
   }
-  // Don't reset selectedPinpoint - let it stay so gallery remains open
 }
 
 const handleRightClick = () => {
   if (!selectedRegion.value) return
   
-  const currentIndex = regionOrder.indexOf(selectedRegion.value)
-  const nextIndex = currentIndex === regionOrder.length - 1 ? 0 : currentIndex + 1
-  selectedRegion.value = regionOrder[nextIndex]
-  
-  // Keep gallery open and reset image index when changing regions
-  currentImageIndex.value = 0
-  // Maintain Google Maps view when navigating
-  if (!showGallery.value) {
+  if (showGallery.value) {
+    // In gallery view: navigate between yarımstansiyalar in current region
+    const regionPinpoints = pinpoints.value.filter(p => p.region === selectedRegion.value)
+    const currentPinpointIndex = regionPinpoints.findIndex(p => p.id === selectedPinpoint.value?.id)
+    const nextIndex = currentPinpointIndex === regionPinpoints.length - 1 ? 0 : currentPinpointIndex + 1
+    const nextPinpoint = regionPinpoints[nextIndex]
+    
+    if (nextPinpoint) {
+      selectedPinpoint.value = nextPinpoint
+      currentImageIndex.value = 0
+    }
+  } else {
+    // In Google Map view: navigate between regions
+    const currentIndex = regionOrder.indexOf(selectedRegion.value)
+    const nextIndex = currentIndex === regionOrder.length - 1 ? 0 : currentIndex + 1
+    selectedRegion.value = regionOrder[nextIndex]
+    
+    // Maintain Google Maps view when navigating
     showMapView.value = true
   }
-  // Don't reset selectedPinpoint - let it stay so gallery remains open
 }
 
 
@@ -759,6 +834,61 @@ const closeGallery = () => {
   showGallery.value = false
   selectedPinpoint.value = null
   currentImageIndex.value = 0
+}
+
+const openImageModal = () => {
+  showImageModal.value = true
+}
+
+const closeImageModal = () => {
+  showImageModal.value = false
+}
+
+const startDrag = (event) => {
+  isDragging.value = true
+  dragStartX.value = event.type === 'mousedown' ? event.clientX : event.touches[0].clientX
+  dragCurrentX.value = dragStartX.value
+}
+
+const onDrag = (event) => {
+  if (!isDragging.value) return
+  
+  event.preventDefault()
+  dragCurrentX.value = event.type === 'mousemove' ? event.clientX : event.touches[0].clientX
+}
+
+const endDrag = () => {
+  if (!isDragging.value) return
+  
+  const dragDistance = dragStartX.value - dragCurrentX.value
+  const minSwipeDistance = 50 // minimum distance to trigger swipe
+  
+  if (Math.abs(dragDistance) > minSwipeDistance) {
+    if (dragDistance > 0) {
+      // Swiped left - go to next image
+      nextImage()
+    } else {
+      // Swiped right - go to previous image
+      prevImage()
+    }
+  }
+  
+  isDragging.value = false
+}
+
+// Enhanced image navigation with visual feedback
+const nextImageWithFeedback = () => {
+  if (selectedPinpoint.value && selectedPinpoint.value.images.length > 0) {
+    currentImageIndex.value = (currentImageIndex.value + 1) % selectedPinpoint.value.images.length
+  }
+}
+
+const prevImageWithFeedback = () => {
+  if (selectedPinpoint.value && selectedPinpoint.value.images.length > 0) {
+    currentImageIndex.value = currentImageIndex.value === 0 
+      ? selectedPinpoint.value.images.length - 1 
+      : currentImageIndex.value - 1
+  }
 }
 
 
@@ -1059,18 +1189,20 @@ onMounted(() => {
 }
 
 .logo-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #31B1F0;
-  height: 100%;
-  padding: 0 24px;
-  border-radius: 0 0 12px 12px;
+  display: flex
+;
+    align-items: center;
+    justify-content: center;
+    background-color: #fff;
+    height: 100%;
+    border: 1px solid #0000004a;
+    padding: 0px 11px;
+    border-radius: 0 0 12px 12px;
 }
 
 .logo {
-  width: 48px;
-  height: 48px;
+  width: 60px;
+  height: 65px;
   object-fit: contain;
 }
 
@@ -1078,7 +1210,7 @@ onMounted(() => {
   font-size: 1.75rem;
   font-weight: 700;
   font-family: 'Montserrat', sans-serif;
-  color: #31B1F0;
+  color: #0E273C;
   margin: 0;
   flex: 1;
   line-height: 1.2;
@@ -1102,7 +1234,7 @@ onMounted(() => {
 .map-section {
   
   border-radius: 12px;
-  padding: 24px;
+  padding: 51px;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -1123,11 +1255,12 @@ onMounted(() => {
 
 .map-caption {
   text-align: start;
-    color: #31B1F0;
+  color: #0E273C;
     font-size: 1.1rem;
   font-family: 'Montserrat', sans-serif;
   margin-top: 12px;
-    font-weight: 700;
+    font-weight: 600;
+    margin-left: 40px;
 }
 
 .map-regions {
@@ -1144,7 +1277,7 @@ onMounted(() => {
 }
 
 .map-region:hover {
-  fill: #2098d4 !important;
+  fill: #98d8ef9d !important;
 }
 
 /* Map Container Styles */
@@ -1172,63 +1305,6 @@ onMounted(() => {
   backface-visibility: hidden;
   perspective: 1000px;
   transform-style: preserve-3d;
-}
-
-/* Control Buttons */
-.control-buttons {
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  z-index: 30;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: 1fr 1fr;
-  gap: 8px;
-  width: 120px;
-  height: 120px;
-}
-
-.control-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 60px;
-  height: 60px;
-  border-radius: 8px;
-  cursor: pointer;
-  border: none;
-  background: none;
-  transition: all 0.3s ease;
-}
-
-.control-btn:hover {
-  transform: translateY(-2px);
-}
-
-.control-icon {
-  width: 60px;
-  height: 60px;
-}
-
-/* Special styling for the home button */
-.home-btn {
-  border: none !important;
-  transition: all 0.3s ease !important;
-}
-
-/* Special styling for the back button */
-.back-btn {
-  border: none !important;
-  transition: all 0.3s ease !important;
-}
-
-
-.region-title {
-  margin: 0 0 0 20px;
-  font-size: 1.25rem;
-  font-weight: 700;
-  font-family: 'Montserrat', sans-serif;
-  flex: 1;
 }
 
 /* Region Detail Container */
@@ -1309,7 +1385,7 @@ onMounted(() => {
 }
 
 .table-header-blue {
-  background-color: #5289C8;
+  background-color: #6C9DAF;
   font-weight: 600;
   color: white;
   text-align: left;
@@ -1407,7 +1483,7 @@ onMounted(() => {
       }
 
       .cls-8, .cls-17, .cls-9, .cls-18 {
-        fill: #31b1f0;
+        fill: #98D8EF;
       }
 
       .cls-17 {
@@ -1489,12 +1565,12 @@ onMounted(() => {
 .table-header-light-blue {
   background-color: #F8FAFC;
   font-weight: 600;
-  text-align: center;
+  text-align: left !important;
   color: #033751;
 }
 
 .count-badge {
-  background-color: #5289C8;
+  background-color: #6C9DAF;
   color: white;
   padding: 2px 8px;
   border-radius: 6px;
@@ -1757,10 +1833,8 @@ onMounted(() => {
   }
 }
 
-/* Region and Yarımstansiya Headers */
-.region-header,
-.yarimstansiya-header,
-.map-header {
+/* Yarımstansiya Headers */
+.yarimstansiya-header {
   position: absolute;
   top: 20px;
   right: 20px;
@@ -1770,9 +1844,7 @@ onMounted(() => {
   border-radius: 8px;
 }
 
-.region-title,
-.yarimstansiya-title,
-.map-title {
+.yarimstansiya-title {
   margin: 0;
   font-size: 2rem;
   font-weight: 900;
@@ -1782,15 +1854,14 @@ onMounted(() => {
 
 /* Map View Styles */
 .map-view-container {
-  width: 85%;
-  margin: 0 auto;
-  margin-top: 100px;
+  width: 100%;
   height: 100%;
   position: relative;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  padding-top: 0;
+  flex-direction: column;
+  background-color: #F5FCFF;
+  border-radius: 12px;
+  padding: 20px;
   opacity: 0;
   transform: scale(0.8) translateY(50px);
   transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
@@ -1818,18 +1889,88 @@ onMounted(() => {
   transform: scale(0.8);
 }
 
-.map-view-image {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  transition: transform 0.5s ease;
-  border-radius: 12px;
+/* Map Header Container */
+.map-header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding: 0;
+  margin-left: -20px;
+  margin-right: -20px;
+  padding-left: 20px;
+  padding-right: 20px;
+  border-bottom: 2px solid #E5E7EB;
+  padding-bottom: 20px;
 }
- 
+
+/* Map Controls */
+.map-controls {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.map-control-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  border-radius: 8px;
+  cursor: pointer;
+  border: none;
+  background: none;
+  transition: all 0.3s ease;
+}
+
+.map-control-btn:hover {
+  transform: translateY(-2px);
+}
+
+.map-control-btn .control-icon {
+  width: 60px;
+  height: 60px;
+}
+
+/* Map Title Container */
+.map-title-container {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.map-title {
+  margin: 0;
+    font-size: 1.7rem;
+    font-weight: 700;
+    font-family: 'Montserrat', sans-serif;
+    color: #31B1F0;
+    font-weight: 900;
+    text-align: right;
+    white-space: nowrap;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Map Content */
+.map-content {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
 .map-view-image {
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover;
+  transition: transform 0.5s ease;
 }
 
 /* Pinpoint Styles */
@@ -1853,8 +1994,6 @@ onMounted(() => {
   }
 }
 
- 
-
 .pinpoint-icon {
   width: 48px;
   height: 64px;
@@ -1863,15 +2002,17 @@ onMounted(() => {
 
 /* Gallery Layout Styles */
 .gallery-container {
-  border-radius: 16px;
   width: 100%;
-  margin-top: 50px;
   height: 100%;
-  overflow: hidden;
-  animation: fadeIn 0.3s ease;
+  position: relative;
   display: flex;
-  flex-direction: row;
-  align-items: center;
+  flex-direction: column;
+  background-color: #F5FCFF;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  animation: fadeIn 0.3s ease;
+  overflow: hidden;
 }
 
 .gallery-header {
@@ -1910,11 +2051,15 @@ onMounted(() => {
   display: flex;
   flex: 1;
   min-height: 0;
+  background: #f5fcff;
+  border-radius: 8px;
+  overflow: hidden;
+  gap: 20px;
+  padding: 20px;
 }
 
 .gallery-main {
-  flex: 2;
-  padding: 24px;
+  flex: 3;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1925,7 +2070,7 @@ onMounted(() => {
   width: 100%;
   height: 100%;
   display: flex;
-  align-items: center;
+  align-items: self-start;
   justify-content: center;
 }
 
@@ -1939,15 +2084,15 @@ onMounted(() => {
 
 .gallery-nav {
   position: absolute;
-  top: 50%;
+  top: 40%;
   transform: translateY(-50%);
-  background: rgba(0, 0, 0, 0.7);
+  background: none;
   color: white;
   border: none;
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  font-size: 1.5rem;
+  border: none;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -1956,11 +2101,12 @@ onMounted(() => {
   z-index: 10;
 }
 
-.gallery-nav:hover {
-  background: rgba(0, 0, 0, 0.9);
-  transform: translateY(-50%) scale(1.1);
+.nav-icon {
+  width: 50px;
+  height: 50px;
 }
 
+ 
 .gallery-prev {
   left: 16px;
 }
@@ -1971,11 +2117,9 @@ onMounted(() => {
 
 .gallery-thumbnails {
   flex: 1;
-  padding: 24px;
   display: flex;
   flex-direction: column;
   gap: 16px;
-  overflow-y: auto;
 }
 
 .thumbnail-container {
@@ -1997,7 +2141,7 @@ onMounted(() => {
 
 .thumbnail-image {
   width: 100%;
-  height: 120px;
+  height: 100%;
   object-fit: cover;
   border-radius: 6px;
 }
@@ -2051,5 +2195,208 @@ onMounted(() => {
   }
 }
 
+/* Gallery Header Container */
+.gallery-header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding: 0;
+  margin-left: -20px;
+  margin-right: -20px;
+  padding-left: 20px;
+  padding-right: 20px;
+  border-bottom: 2px solid #E5E7EB;
+  padding-bottom: 20px;
+}
 
+/* Gallery Controls */
+.gallery-controls {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.gallery-control-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  border-radius: 8px;
+  cursor: pointer;
+  border: none;
+  background: none;
+  transition: all 0.3s ease;
+}
+
+.gallery-control-btn:hover {
+  transform: translateY(-2px);
+}
+
+.gallery-control-btn .control-icon {
+  width: 60px;
+  height: 60px;
+}
+
+/* Gallery Title Container */
+.gallery-title-container {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.gallery-title {
+  margin: 0;
+  font-size: 1.7rem;
+  font-weight: 900;
+  font-family: 'Montserrat', sans-serif;
+  color: #31B1F0;
+  text-align: right;
+  white-space: nowrap;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Image Modal Styles */
+.image-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease;
+}
+
+.modal-content {
+  position: relative;
+  max-width: 90vw;
+  max-height: 90vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-image {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: 8px;
+  transition: opacity 0.3s ease;
+}
+
+.modal-image.fade-enter {
+  opacity: 0;
+  transform: scale(0.95);
+}
+
+.modal-image.fade-enter-active {
+  opacity: 1;
+  transform: scale(1);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.modal-image.fade-leave {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.modal-image.fade-leave-active {
+  opacity: 0;
+  transform: scale(0.95);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+
+
+.modal-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.7);
+  border: none;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  z-index: 10;
+}
+
+.modal-nav:hover {
+  background: rgba(0, 0, 0, 0.9);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.modal-prev {
+  left: -80px;
+}
+
+.modal-next {
+  right: -80px;
+}
+
+.modal-nav .nav-icon {
+  width: 30px;
+  height: 30px;
+  filter: brightness(0) invert(1);
+}
+
+/* Image Counter */
+.image-counter {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  z-index: 10;
+  backdrop-filter: blur(10px);
+}
+
+/* Enhanced Modal Image Transitions */
+.modal-image {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: 8px;
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transform-origin: center;
+}
+
+.modal-image.fade-enter {
+  opacity: 0;
+  transform: scale(0.95) translateX(20px);
+}
+
+.modal-image.fade-enter-active {
+  opacity: 1;
+  transform: scale(1) translateX(0);
+  transition: opacity 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
+              transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.modal-image.fade-leave {
+  opacity: 1;
+  transform: scale(1) translateX(0);
+}
+
+.modal-image.fade-leave-active {
+  opacity: 0;
+  transform: scale(0.95) translateX(-20px);
+  transition: opacity 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
+              transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
 </style> 
