@@ -9,7 +9,7 @@
         <div class="logo-container">
           <img src="/map/azerishiqlogo.svg" alt="Azərişıq Logo" class="logo" />
         </div>
-        <h1 class="title">AZƏRİŞIQ" ASC TƏRƏFİNDƏN YENİDƏN QURULAN YARIMSTANSİYALAR</h1>
+        <h1 class="title">"AZƏRİŞIQ" ASC TƏRƏFİNDƏN YENİDƏN QURULAN YARIMSTANSİYALAR</h1>
       </div>
     </div>
 
@@ -293,15 +293,15 @@
                 <div v-for="pinpoint in getVisiblePinpoints()" 
                      :key="pinpoint.id" 
                      class="pinpoint-overlay"
-                     :class="{ 'pinpoint-clickable': mapZoomTransform.scale > 0.8 }"
+                     :class="{ 'pinpoint-clickable': mapZoomTransform.scale >= 1 }"
                      :style="{ 
                        left: pinpoint.x + '%', 
                        top: pinpoint.y + '%',
                        transform: `translate(-50%, -50%) scale(${1 / mapZoomTransform.scale})`,
-                       pointerEvents: mapZoomTransform.scale > 0.8 ? 'auto' : 'none'
+                       pointerEvents: mapZoomTransform.scale >= 1 ? 'auto' : 'none'
                      }"
                      @click.stop="handlePinPointClick(pinpoint)">
-                  <img src="/icons/yarimstansiyagooglemap.svg" 
+                  <img src="/icons/pinpoint.svg" 
                        alt="Yarımstansiya" 
                        class="pinpoint-icon" />
                 </div>
@@ -309,15 +309,23 @@
             </div>
             
             <!-- Zoom Controls for Google Map -->
-            <div class="map-zoom-controls">
-              <button class="zoom-btn zoom-in" @click="zoomInMap">
-                <span>+</span>
-              </button>
-              <div class="zoom-separator"></div>
-              <button class="zoom-btn zoom-out" @click="zoomOutMap">
-                <span>−</span>
-              </button>
-            </div>
+                          <div class="map-zoom-controls">
+                <button class="zoom-btn zoom-in" @click="zoomInMap">
+                  <span>+</span>
+                </button>
+                <div class="zoom-separator"></div>
+                <button class="zoom-btn zoom-out" 
+                        @click="zoomOutMap"
+                        :class="{ 'zoom-disabled': mapZoomTransform.scale <= 1 }">
+                  <span>−</span>
+                </button>
+                <div class="zoom-separator"></div>
+                <button class="zoom-btn zoom-reset" 
+                        @click="resetMapView"
+                        :class="{ 'zoom-disabled': mapZoomTransform.scale === 1 && mapZoomTransform.translateX === 0 && mapZoomTransform.translateY === 0 }">
+                  <img src="/icons/tablerefresh.svg" alt="Reset" class="reset-icon" />
+                </button>
+              </div>
           </div>
 
 
@@ -583,25 +591,13 @@ const dragStartTransform = ref({ translateX: 0, translateY: 0 })
 // Yarimstansiya pinpoints data - EASY TO EDIT
 // Coordinates are relative to individual region SVG maps (not main map)
 const pinpoints = ref([
-  // Baku Region Pinpoints
+  // Baku Region Pinpoints - Google Map Coordinates
   { 
     id: 'baku-1', 
-    x: 60,  // 60% from left of SVG
-    y: 40,  // 28% from top of SVG
+    x: 45,  // Nərimanov area
+    y: 35,  
     region: 'baku',
-    name: 'Abşeron Əliağavahid',
-    images: [
-      '/imgs/baku/abseron-eliagavahid-ys/1.jpg',
-      '/imgs/baku/abseron-eliagavahid-ys/2.jpg',
-      '/imgs/baku/abseron-eliagavahid-ys/3.jpg',
-    ]
-  },
-  { 
-    id: 'baku-2', 
-    x: 51,  // 51% from left
-    y: 46,  // 26% from top
-    region: 'baku',
-    name: 'Nərimanov Təbriz',
+    name: 'Nərimanov-Təbriz Y/S',
     images: [
       '/imgs/baku/nerimanov-tebriz-ys/1.jpg',
       '/imgs/baku/nerimanov-tebriz-ys/2.jpg',
@@ -609,11 +605,11 @@ const pinpoints = ref([
     ]
   },
   { 
-    id: 'baku-3', 
-    x: 25,  // 25% from left
-    y: 44,  // 34% from top
+    id: 'baku-2', 
+    x: 42,  // Sabunçu area
+    y: 38,  
     region: 'baku',
-    name: 'Sabunçu 34',
+    name: 'Sabunçu 34 Y/S',
     images: [
       '/imgs/baku/sabuncu-34-ys/1.jpg',
       '/imgs/baku/sabuncu-34-ys/2.jpg',
@@ -621,11 +617,11 @@ const pinpoints = ref([
     ]
   },
   { 
-    id: 'baku-4', 
-    x: 37,  // 37% from left
-    y: 52,  // 52% from top
+    id: 'baku-3', 
+    x: 40,  // Sabunçu Pirşağı area
+    y: 42,  
     region: 'baku',
-    name: 'Sabunçu Pirsagi',
+    name: 'Sabunçu Pirşağı Y/S',
     images: [
       '/imgs/baku/sabuncu-pirsagi-ys/1.jpg',
       '/imgs/baku/sabuncu-pirsagi-ys/2.jpg',
@@ -633,11 +629,11 @@ const pinpoints = ref([
     ]
   },
   { 
-    id: 'baku-5', 
-    x: 30,  // 30% from left
-    y: 40,  // 30% from top
+    id: 'baku-4', 
+    x: 48,  // Səbail area
+    y: 45,  
     region: 'baku',
-    name: 'Səbail Badamdar',
+    name: 'Səbail Badamdar Y/S',
     images: [
       '/imgs/baku/sebail-badamdar-ys/1.jpg',
       '/imgs/baku/sebail-badamdar-ys/2.jpg',
@@ -645,41 +641,212 @@ const pinpoints = ref([
     ]
   },
   { 
-    id: 'baku-6', 
-    x: 35,  // 35% from left
-    y: 45,  // 35% from top
+    id: 'baku-5', 
+    x: 35,  // Abşeron area
+    y: 30,  
     region: 'baku',
-    name: 'Səbail Liman2',
+    name: 'Abşeron Əliağa Vahid Y/S',
+    images: [
+      '/imgs/baku/abseron-eliagavahid-ys/1.jpg',
+      '/imgs/baku/abseron-eliagavahid-ys/2.jpg',
+      '/imgs/baku/abseron-eliagavahid-ys/3.jpg'
+    ]
+  },
+  { 
+    id: 'baku-6', 
+    x: 50,  // Səbail Liman area
+    y: 48,  
+    region: 'baku',
+    name: 'Səbail Liman 2 Y/S',
     images: [
       '/imgs/baku/sebail-liman2-ys/1.jpg',
       '/imgs/baku/sebail-liman2-ys/2.jpg',
       '/imgs/baku/sebail-liman2-ys/3.jpg'
     ]
   },
-  // Sumqayit Region Pinpoints  
+  // Sumqayit Region Pinpoints - Google Map Coordinates
   { 
     id: 'sumqayit-1', 
-    x: 18,  // 18% from left
-    y: 12,  // 12% from top
+    x: 45,  // Sitalçay area
+    y: 25,  
     region: 'sumqayit',
-    name: 'Sumqayıt Kimya Yarımstansiyası',
+    name: 'Sitalçay Y/S',
     images: [
-      '/imgs/28-6385070 1.jpg',
-      '/imgs/28-4737145 1.jpg',
-      '/imgs/28-6385070 1.jpg',
-      '/imgs/28-0223635 1.jpg'
+      '/imgs/sumqayit/sitalcay-ys/1.jpg',
+      '/imgs/sumqayit/sitalcay-ys/2.jpg',
+      '/imgs/sumqayit/sitalcay-ys/3.jpg'
     ]
   },
-  // Xacmaz Region Pinpoints
+  // Xacmaz Region Pinpoints - Google Map Coordinates
   { 
     id: 'xacmaz-1', 
-    x: 25,  // 25% from left
-    y: 18,  // 18% from top
+    x: 50,  // Xaçmaz center
+    y: 35,  
     region: 'xacmaz',
-    name: 'Xaçmaz Mərkəzi Yarımstansiyası',
+    name: 'Xaçmaz E/S',
     images: [
-      '/imgs/28-1805178 1.jpg',
-      '/imgs/28-4737145 1.jpg'
+      '/imgs/xacmaz/xacmaz-es/1.jpg',
+      '/imgs/xacmaz/xacmaz-es/2.jpg',
+      '/imgs/xacmaz/xacmaz-es/3.jpg'
+    ]
+  },
+  // Sirvan Region Pinpoints - Google Map Coordinates
+  { 
+    id: 'sirvan-1', 
+    x: 45,  // Kürdəmir area
+    y: 40,  
+    region: 'sirvan',
+    name: 'Kürdəmir Y/S',
+    images: [
+      '/imgs/sirvan/kurdemir-ys/1.jpg',
+      '/imgs/sirvan/kurdemir-ys/2.jpg',
+      '/imgs/sirvan/kurdemir-ys/3.jpg'
+    ]
+  },
+  // Qerb Region Pinpoints - Google Map Coordinates
+  { 
+    id: 'qerb-1', 
+    x: 35,  // Tovuz area
+    y: 30,  
+    region: 'qerb',
+    name: 'Tovuz Y/S',
+    images: [
+      '/imgs/qerb/tovuz-ys/1.jpg',
+      '/imgs/qerb/tovuz-ys/2.jpg',
+      '/imgs/qerb/tovuz-ys/3.jpg'
+    ]
+  },
+  { 
+    id: 'qerb-2', 
+    x: 40,  // Göygöl area
+    y: 35,  
+    region: 'qerb',
+    name: 'Göygöl Y/S',
+    images: [
+      '/imgs/qerb/goygol-ys/1.jpg',
+      '/imgs/qerb/goygol-ys/2.jpg',
+      '/imgs/qerb/goygol-ys/3.jpg'
+    ]
+  },
+  { 
+    id: 'qerb-3', 
+    x: 45,  // Gəncə area
+    y: 40,  
+    region: 'qerb',
+    name: 'Gəncə E/S',
+    images: [
+      '/imgs/qerb/gence-es/1.jpg',
+      '/imgs/qerb/gence-es/2.jpg',
+      '/imgs/qerb/gence-es/3.jpg'
+    ]
+  },
+  { 
+    id: 'qerb-4', 
+    x: 42,  // Gəncə Mərkəz area
+    y: 38,  
+    region: 'qerb',
+    name: 'Gəncə Mərkəz Y/S',
+    images: [
+      '/imgs/qerb/gence-merkez-ys/1.jpg',
+      '/imgs/qerb/gence-merkez-ys/2.jpg',
+      '/imgs/qerb/gence-merkez-ys/3.jpg'
+    ]
+  },
+  // Qarabag Region Pinpoints - Google Map Coordinates
+  { 
+    id: 'qarabag-1', 
+    x: 30,  // Xocalı area
+    y: 25,  
+    region: 'qarabag',
+    name: 'Xocalı Əsgəran',
+    images: [
+      '/imgs/qarabag/xocali-esgeran/1.jpg',
+      '/imgs/qarabag/xocali-esgeran/2.jpg',
+      '/imgs/qarabag/xocali-esgeran/3.jpg'
+    ]
+  },
+  { 
+    id: 'qarabag-2', 
+    x: 35,  // Zəfər area
+    y: 30,  
+    region: 'qarabag',
+    name: 'Zəfər Y/S',
+    images: [
+      '/imgs/qarabag/zefer-ys/1.jpg',
+      '/imgs/qarabag/zefer-ys/2.jpg',
+      '/imgs/qarabag/zefer-ys/3.jpg'
+    ]
+  },
+  { 
+    id: 'qarabag-3', 
+    x: 40,  // Signa area
+    y: 35,  
+    region: 'qarabag',
+    name: 'Signa',
+    images: [
+      '/imgs/qarabag/signa/1.jpg',
+      '/imgs/qarabag/signa/2.jpg',
+      '/imgs/qarabag/signa/3.jpg'
+    ]
+  },
+  { 
+    id: 'qarabag-4', 
+    x: 45,  // Malıbəyli area
+    y: 40,  
+    region: 'qarabag',
+    name: 'Malıbəyli',
+    images: [
+      '/imgs/qarabag/malibeyli/1.jpg',
+      '/imgs/qarabag/malibeyli/2.jpg',
+      '/imgs/qarabag/malibeyli/3.jpg'
+    ]
+  },
+  { 
+    id: 'qarabag-5', 
+    x: 50,  // Kəlbəcər area
+    y: 45,  
+    region: 'qarabag',
+    name: 'Kəlbəcər Şəhər Y/S',
+    images: [
+      '/imgs/qarabag/kelbecer-seher-ys/1.jpg',
+      '/imgs/qarabag/kelbecer-seher-ys/2.jpg',
+      '/imgs/qarabag/kelbecer-seher-ys/3.jpg'
+    ]
+  },
+  { 
+    id: 'qarabag-6', 
+    x: 55,  // Xocavənd Zoğalbulaq area
+    y: 50,  
+    region: 'qarabag',
+    name: 'Xocavənd Zoğalbulaq Y/S',
+    images: [
+      '/imgs/qarabag/xocavend-zogalbulaq-ys/1.jpg',
+      '/imgs/qarabag/xocavend-zogalbulaq-ys/2.jpg',
+      '/imgs/qarabag/xocavend-zogalbulaq-ys/3.jpg'
+    ]
+  },
+  { 
+    id: 'qarabag-7', 
+    x: 60,  // Xocavənd 35kv area
+    y: 55,  
+    region: 'qarabag',
+    name: 'Xocavənd 35kv',
+    images: [
+      '/imgs/qarabag/xocavend-35kv/1.jpg',
+      '/imgs/qarabag/xocavend-35kv/2.jpg',
+      '/imgs/qarabag/xocavend-35kv/3.jpg'
+    ]
+  },
+  { 
+    id: 'qarabag-8', 
+    x: 65,  // Xankəndi area
+    y: 60,  
+    region: 'qarabag',
+    name: 'Xankəndi',
+    images: [
+      '/imgs/qarabag/xankendi/1.jpg',
+      '/imgs/qarabag/xankendi/2.jpg',
+      '/imgs/qarabag/xankendi/3.jpg'
     ]
   }
 ])
@@ -737,12 +904,7 @@ const handleMapClick = (event) => {
         selectedRegion.value = region
         showMapView.value = true // Show Google Maps by default
         // Reset map zoom when switching regions
-        mapZoomTransform.value = {
-          scale: 1,
-          translateX: 0,
-          translateY: 0,
-          transition: 'transform 0.3s ease-out'
-        }
+        resetMapView()
       }, 1500) // Match the transition duration
     }
   }
@@ -770,12 +932,12 @@ const zoomToRegion = (regionElement) => {
   const svgCenterY = svgRect.height / 2
   
   // Calculate the scale (zoom level)
-  const scale = 5.0 // Increased for better zoom effect
+  const scale = 2.0 // Increased for better zoom effect
   
   // Calculate the translation to center the region
   // Simplified calculation for better positioning
-  const translateX = svgCenterX - (regionCenterX * scale) + 2000
-  const translateY = svgCenterY - (regionCenterY * scale) + 1800
+  const translateX = svgCenterX - (regionCenterX * scale) + 600
+  const translateY = svgCenterY - (regionCenterY * scale) + 400
   
   // Add manual offset adjustments here if needed
   // translateX += 50  // Move right by 50px
@@ -833,7 +995,7 @@ const zoomInMap = () => {
 }
 
 const zoomOutMap = () => {
-  const newScale = Math.max(mapZoomTransform.value.scale / 1.5, 0.5)
+  const newScale = Math.max(mapZoomTransform.value.scale / 1.5, 1)
   mapZoomTransform.value = {
     ...mapZoomTransform.value,
     scale: newScale,
@@ -844,7 +1006,7 @@ const zoomOutMap = () => {
 const handleMapWheel = (event) => {
   event.preventDefault()
   const delta = event.deltaY > 0 ? 0.9 : 1.1
-  const newScale = Math.max(0.5, Math.min(5, mapZoomTransform.value.scale * delta))
+  const newScale = Math.max(1, Math.min(5, mapZoomTransform.value.scale * delta))
   
   mapZoomTransform.value = {
     ...mapZoomTransform.value,
@@ -869,7 +1031,7 @@ const handleTouchStart = (event) => {
       x: (touch1.clientX + touch2.clientX) / 2,
       y: (touch1.clientY + touch2.clientY) / 2
     }
-  } else if (event.touches.length === 1 && mapZoomTransform.value.scale > 1) {
+  } else if (event.touches.length === 1 && mapZoomTransform.value.scale >= 1) {
     // Single finger drag
     isMapDragging.value = true
     dragStartPos.value = { x: event.touches[0].clientX, y: event.touches[0].clientY }
@@ -895,14 +1057,14 @@ const handleTouchMove = (event) => {
     )
     
     const scaleFactor = currentDistance / touchStartDistance.value
-    const newScale = Math.max(0.5, Math.min(5, mapZoomTransform.value.scale * scaleFactor))
+    const newScale = Math.max(1, Math.min(5, mapZoomTransform.value.scale * scaleFactor))
     
     mapZoomTransform.value = {
       ...mapZoomTransform.value,
       scale: newScale,
       transition: 'none'
     }
-  } else if (event.touches.length === 1 && isMapDragging.value && mapZoomTransform.value.scale > 1) {
+  } else if (event.touches.length === 1 && isMapDragging.value && mapZoomTransform.value.scale >= 1) {
     // Single finger drag
     event.preventDefault()
     
@@ -925,9 +1087,19 @@ const handleTouchEnd = () => {
   mapZoomTransform.value.transition = 'transform 0.3s ease-out'
 }
 
+// Reset map to default view
+const resetMapView = () => {
+  mapZoomTransform.value = {
+    scale: 1,
+    translateX: 0,
+    translateY: 0,
+    transition: 'transform 0.5s ease-out'
+  }
+}
+
 // Mouse dragging functions
 const handleMapMouseDown = (event) => {
-  if (mapZoomTransform.value.scale > 1) {
+  if (mapZoomTransform.value.scale >= 1) {
     isMapDragging.value = true
     dragStartPos.value = { x: event.clientX, y: event.clientY }
     dragStartTransform.value = { 
@@ -939,7 +1111,7 @@ const handleMapMouseDown = (event) => {
 }
 
 const handleMapMouseMove = (event) => {
-  if (isMapDragging.value && mapZoomTransform.value.scale > 1) {
+  if (isMapDragging.value && mapZoomTransform.value.scale >= 1) {
     const deltaX = event.clientX - dragStartPos.value.x
     const deltaY = event.clientY - dragStartPos.value.y
     
@@ -1089,12 +1261,7 @@ const closeRegionModal = () => {
   currentImageIndex.value = 0
   resetZoom()
   // Reset map zoom when closing region modal
-  mapZoomTransform.value = {
-    scale: 1,
-    translateX: 0,
-    translateY: 0,
-    transition: 'transform 0.3s ease-out'
-  }
+  resetMapView()
   console.log('closeRegionModal completed')
 }
 
@@ -1219,45 +1386,28 @@ const getRegionName = (region) => {
 const getRegionSubstations = (region) => {
   const substationData = {
     'baku': [
-      { name: 'Bakı-Binəqədi EŞ', specs: '110 / 35 / 10' },
-      { name: 'Bakı-Nərimanov EŞ', specs: '110 / 35 / 10' },
-      { name: 'Bakı-Xətai EŞ', specs: '110 / 35 / 10' },
-      { name: 'Bakı-Qaradağ EŞ', specs: '110 / 35 / 10' },
-      { name: 'Bakı-Nəsimi EŞ', specs: '110 / 35 / 10' },
-      { name: 'Bakı-Xəzər EŞ', specs: '110 / 35 / 10' }
+      { name: 'Nərimanov-Təbriz YS', specs: '110 / 35 / 10' },
+      { name: 'Sabunçu 34 YS', specs: '110 / 35 / 10' },
+      { name: 'Sabunçu Pirşağı YS', specs: '110 / 35 / 10' },
+      { name: 'Səbail Badamdar YS', specs: '110 / 35 / 10' },
+      { name: 'Abşeron Əliağavahid YS', specs: '110 / 35 / 10' },
+      { name: 'Səbail Liman 2 YS', specs: '110 / 35 / 10' }
     ],
     'sumqayit': [
-      { name: 'Sumqayıt EŞ', specs: '110 / 35 / 10' },
-      { name: 'Xızı EŞ', specs: '110 / 35 / 10' },
-      { name: 'Qobustan EŞ', specs: '110 / 35 / 10' }
+      { name: 'Sitalçay YS', specs: '110 / 35 / 10' },
     ],
     'xacmaz': [
       { name: 'Xaçmaz EŞ', specs: '110 / 35 / 10' },
-      { name: 'Qusar EŞ', specs: '110 / 35 / 10' },
-      { name: 'Siyəzən EŞ', specs: '110 / 35 / 10' },
-      { name: 'Quba EŞ', specs: '110 / 35 / 10' },
-      { name: 'Şabran EŞ', specs: '110 / 35 / 10' }
     ],
     'sirvan': [
       { name: 'Şirvan EŞ', specs: '110 / 35 / 10' },
-      { name: 'Hacıqabul EŞ', specs: '110 / 35 / 10' },
-      { name: 'Sabirabad EŞ', specs: '110 / 35 / 10' },
-      { name: 'Neftçala EŞ', specs: '110 / 35 / 10' },
-      { name: 'Salyan EŞ', specs: '110 / 35 / 10' },
-      { name: 'Ağsu EŞ', specs: '110 / 35 / 10' },
-      { name: 'Kürdəmir EŞ', specs: '110 / 35 / 10' },
-      { name: 'Saatlı EŞ', specs: '110 / 35 / 10' }
+      { name: 'Kürdəmir YS', specs: '110 / 35 / 10' },
     ],
     'qerb': [
-      { name: 'Gədəbəy EŞ', specs: '110 / 35 / 10' },
       { name: 'Gəncə EŞ', specs: '110 / 35 / 10' },
-      { name: 'Qazax EŞ', specs: '110 / 35 / 10' },
-      { name: 'Ağstafa EŞ', specs: '110 / 35 / 10' },
-      { name: 'Samux EŞ', specs: '110 / 35 / 10' },
-      { name: 'Şəmkir EŞ', specs: '110 / 35 / 10' },
-      { name: 'Tovuz EŞ', specs: '110 / 35 / 10' },
-      { name: 'Daşkəsən EŞ', specs: '110 / 35 / 10' },
-      { name: 'Göygöl EŞ', specs: '110 / 35 / 10' }
+      { name: 'Gəncə Mərkəz YS', specs: '110 / 35 / 10' },
+      { name: 'Tovuz YS', specs: '110 / 35 / 10' },
+      { name: 'Göygöl YS', specs: '110 / 35 / 10' }
     ],
     'simalqerb': [
       { name: 'Qəbələ EŞ', specs: '110 / 35 / 10' },
@@ -1298,12 +1448,15 @@ const getRegionSubstations = (region) => {
       { name: 'Lerik EŞ', specs: '110 / 35 / 10' }
     ],
     'qarabag': [
-      { name: 'Qubadlı EŞ', specs: '110 / 35 / 10' },
-      { name: 'Xocali EŞ', specs: '110 / 35 / 10' },
-      { name: 'Cəbrayıl EŞ', specs: '110 / 35 / 10' },
-      { name: 'Kəlbəcər EŞ', specs: '110 / 35 / 10' },
-      { name: 'Laçın EŞ', specs: '110 / 35 / 10' },
-      { name: 'Zəngilan EŞ', specs: '110 / 35 / 10' }
+      { name: 'Zəfər YS', specs: '110 / 35 / 10' },
+      { name: 'Xankəndi YS', specs: '110 / 35 / 10' },
+      { name: 'Xocalı Əsgəran YS', specs: '110 / 35 / 10' },
+      { name: 'Xocavənd 35 YS', specs: '110 / 35 / 10' },
+      { name: 'Zoğalbulaq YS', specs: '110 / 35 / 10' },
+      { name: 'Kəlbəcər YS', specs: '110 / 35 / 10' },
+      { name: 'Laçın Minkənd YS', specs: '110 / 35 / 10' },
+      { name: 'Malibəyli YS', specs: '110 / 35 / 10' },
+      { name: 'Sığnaq YS', specs: '110 / 35 / 10' }
     ],
     'naxcivan': [
       { name: 'Naxçıvan EŞ', specs: '110 / 35 / 10' },
@@ -1324,15 +1477,7 @@ const getSubstationDetails = (pinpoint) => {
     { label: 'Əhali Abonenti', value: '25000' },
     { label: 'Qeyri Əhali Abonenti', value: '1800' },
     { label: 'Enerji gücü', value: '110/35/6 kv' },
-    { label: '*****', value: '110/35/10' },
-    { label: '*****', value: '110/35/10' },
-    { label: '*****', value: '110/35/10' },
-    { label: '*****', value: '110/35/10' },
-    { label: '*****', value: '110/35/10' },
-    { label: '*****', value: '110/35/10' },
-    { label: '*****', value: '110/35/10' },
-    { label: '*****', value: '110/35/10' },
-    { label: '*****', value: '110/35/10' }
+     
   ]
 }
 
@@ -1346,6 +1491,7 @@ const getGoogleMapFileName = (region) => {
     'baku': 'bakugooglemap.png',
     'sumqayit': 'sumqayitgooglemap.png',
     'xacmaz': 'xacmazgooglemap.png',
+    'sirvan': 'shirvangooglemap.png',
     'qerb': 'qerbgooglemap.png',
     'simalqerb': 'simalqerbgooglemap.png',
     'merkezi-aran': 'merkeziarangooglemap.png',
@@ -2250,6 +2396,32 @@ onMounted(() => {
   transform: scale(0.95);
 }
 
+.zoom-btn.zoom-disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.zoom-btn.zoom-disabled:hover {
+  transform: none;
+  background: rgba(255, 255, 255, 0.95);
+}
+
+.zoom-btn.zoom-reset {
+  background: rgba(255, 255, 255, 0.95);
+}
+
+.zoom-btn.zoom-reset:hover {
+  background: rgba(255, 255, 255, 1);
+  transform: scale(1.05);
+}
+
+.reset-icon {
+  width: 20px;
+  height: 20px;
+  filter: invert(48%) sepia(79%) saturate(2476%) hue-rotate(190deg) brightness(118%) contrast(119%);
+}
+
 .zoom-separator {
   width: 32px;
   height: 1px;
@@ -2331,8 +2503,8 @@ onMounted(() => {
   cursor: pointer;
   z-index: 10;
   opacity: 0;
-  animation: pinpointFadeIn 0.3s ease 0.8s forwards;
-  transition: transform 0.3s ease-out;
+  animation: pinpointFadeIn 0.2s ease 0.2s forwards;
+  transition: transform 0.1s ease-out;
 }
 
 .pinpoint-overlay.pinpoint-clickable {
