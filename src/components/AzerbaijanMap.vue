@@ -706,7 +706,7 @@ const pinpoints = ref([
   // Qerb Region Pinpoints - Google Map Coordinates
   { 
     id: 'qerb-1', 
-    x: 35,  // Tovuz area
+    x: 25,  // Tovuz area
     y: 30,  
     region: 'qerb',
     name: 'Tovuz Y/S',
@@ -718,8 +718,8 @@ const pinpoints = ref([
   },
   { 
     id: 'qerb-2', 
-    x: 40,  // Göygöl area
-    y: 35,  
+    x: 54,  // Göygöl area
+    y: 65,  
     region: 'qerb',
     name: 'Göygöl Y/S',
     images: [
@@ -730,8 +730,8 @@ const pinpoints = ref([
   },
   { 
     id: 'qerb-3', 
-    x: 45,  // Gəncə area
-    y: 40,  
+    x: 55,  // Gəncə area
+    y: 50,  
     region: 'qerb',
     name: 'Gəncə E/S',
     images: [
@@ -742,8 +742,8 @@ const pinpoints = ref([
   },
   { 
     id: 'qerb-4', 
-    x: 42,  // Gəncə Mərkəz area
-    y: 38,  
+    x: 55,  // Gəncə Mərkəz area
+    y: 55,  
     region: 'qerb',
     name: 'Gəncə Mərkəz Y/S',
     images: [
@@ -756,7 +756,7 @@ const pinpoints = ref([
   { 
     id: 'qarabag-1', 
     x: 30,  // Xocalı area
-    y: 25,  
+    y: 40,  
     region: 'qarabag',
     name: 'Xocalı Əsgəran',
     images: [
@@ -768,7 +768,7 @@ const pinpoints = ref([
   { 
     id: 'qarabag-2', 
     x: 35,  // Zəfər area
-    y: 30,  
+    y: 35,  
     region: 'qarabag',
     name: 'Zəfər Y/S',
     images: [
@@ -780,7 +780,7 @@ const pinpoints = ref([
   { 
     id: 'qarabag-3', 
     x: 40,  // Signa area
-    y: 35,  
+    y: 20,  
     region: 'qarabag',
     name: 'Signa',
     images: [
@@ -791,8 +791,8 @@ const pinpoints = ref([
   },
   { 
     id: 'qarabag-4', 
-    x: 45,  // Malıbəyli area
-    y: 40,  
+    x: 32,  // Malıbəyli area
+    y: 28,  
     region: 'qarabag',
     name: 'Malıbəyli',
     images: [
@@ -815,7 +815,7 @@ const pinpoints = ref([
   },
   { 
     id: 'qarabag-6', 
-    x: 55,  // Xocavənd Zoğalbulaq area
+    x: 45,  // Xocavənd Zoğalbulaq area
     y: 50,  
     region: 'qarabag',
     name: 'Xocavənd Zoğalbulaq Y/S',
@@ -828,7 +828,7 @@ const pinpoints = ref([
   { 
     id: 'qarabag-7', 
     x: 60,  // Xocavənd 35kv area
-    y: 55,  
+    y: 45,  
     region: 'qarabag',
     name: 'Xocavənd 35kv',
     images: [
