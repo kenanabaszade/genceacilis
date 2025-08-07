@@ -266,21 +266,57 @@
               </div>
             </div>
             
-            <div class="map-content">
-              <img :src="`/googlemaps/${getGoogleMapFileName(selectedRegion)}`" 
-                   :alt="`${getRegionName(selectedRegion)} Google Map`" 
-                   class="map-view-image" />
-              
-              <!-- Yarimstansiya Pinpoints on Google Map -->
-              <div v-for="pinpoint in getVisiblePinpoints()" 
-                   :key="pinpoint.id" 
-                   class="pinpoint-overlay"
-                   :style="{ left: pinpoint.x + '%', top: pinpoint.y + '%' }"
-                   @click.stop="handlePinPointClick(pinpoint)">
-                <img src="/icons/yarimstansiyagooglemap.svg" 
-                     alt="Yarımstansiya" 
-                     class="pinpoint-icon" />
+            <div class="map-content" 
+                 ref="mapContainer"
+                 @wheel="handleMapWheel"
+                 @mousedown="handleMapMouseDown"
+                 @mousemove="handleMapMouseMove"
+                 @mouseup="handleMapMouseUp"
+                 @mouseleave="handleMapMouseUp"
+                 @touchstart="handleTouchStart"
+                 @touchmove="handleTouchMove"
+                 @touchend="handleTouchEnd"
+                 @contextmenu.prevent
+                 :class="{ 'map-dragging': isMapDragging }">
+              <div class="map-zoom-container"
+                   :style="{
+                     transform: `translate3d(${mapZoomTransform.translateX}px, ${mapZoomTransform.translateY}px, 0) scale(${mapZoomTransform.scale})`,
+                     transformOrigin: 'center',
+                     transition: mapZoomTransform.transition,
+                     willChange: 'transform'
+                   }">
+                <img :src="`/googlemaps/${getGoogleMapFileName(selectedRegion)}`" 
+                     :alt="`${getRegionName(selectedRegion)} Google Map`" 
+                     class="map-view-image" />
+                
+                <!-- Yarimstansiya Pinpoints on Google Map -->
+                <div v-for="pinpoint in getVisiblePinpoints()" 
+                     :key="pinpoint.id" 
+                     class="pinpoint-overlay"
+                     :class="{ 'pinpoint-clickable': mapZoomTransform.scale > 0.8 }"
+                     :style="{ 
+                       left: pinpoint.x + '%', 
+                       top: pinpoint.y + '%',
+                       transform: `translate(-50%, -50%) scale(${1 / mapZoomTransform.scale})`,
+                       pointerEvents: mapZoomTransform.scale > 0.8 ? 'auto' : 'none'
+                     }"
+                     @click.stop="handlePinPointClick(pinpoint)">
+                  <img src="/icons/yarimstansiyagooglemap.svg" 
+                       alt="Yarımstansiya" 
+                       class="pinpoint-icon" />
+                </div>
               </div>
+            </div>
+            
+            <!-- Zoom Controls for Google Map -->
+            <div class="map-zoom-controls">
+              <button class="zoom-btn zoom-in" @click="zoomInMap">
+                <span>+</span>
+              </button>
+              <div class="zoom-separator"></div>
+              <button class="zoom-btn zoom-out" @click="zoomOutMap">
+                <span>−</span>
+              </button>
             </div>
           </div>
 
@@ -317,7 +353,7 @@
                        :src="selectedPinpoint.images[currentImageIndex]" 
                        :alt="selectedPinpoint.name"
                        class="main-image"
-                       @click="openImageModal" />
+                       @click="openPhotoSwipe(currentImageIndex)" />
                   
                   <!-- Navigation Arrows -->
                   <button v-if="selectedPinpoint?.images?.length > 1" 
@@ -463,6 +499,41 @@
     </div>
   </div>
 
+  <!-- PhotoSwipe Template -->
+  <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="pswp__bg"></div>
+    <div class="pswp__scroll-wrap">
+      <div class="pswp__container">
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+      </div>
+      <div class="pswp__ui pswp__ui--hidden">
+        <div class="pswp__top-bar">
+          <div class="pswp__counter"></div>
+          <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+          <button class="pswp__button pswp__button--share" title="Share"></button>
+          <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+          <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+          <div class="pswp__preloader">
+            <div class="pswp__preloader__icn">
+              <div class="pswp__preloader__cut">
+                <div class="pswp__preloader__donut"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+          <div class="pswp__share-tooltip"></div>
+        </div>
+        <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+        <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button>
+        <div class="pswp__caption">
+          <div class="pswp__caption__center"></div>
+        </div>
+      </div>
+    </div>
+  </div>
 
 </template>
 
@@ -491,6 +562,23 @@ const dragCurrentX = ref(0)
 const isZoomed = ref(false)
 const zoomTransform = ref({ scale: 1, translateX: 0, translateY: 0 })
 const originalViewBox = ref('0 0 1046.41 834.24')
+
+// Google Map zoom functionality
+const mapZoomTransform = ref({ 
+  scale: 1, 
+  translateX: 0, 
+  translateY: 0, 
+  transition: 'transform 0.3s ease-out' 
+})
+const mapContainer = ref(null)
+const touchStartDistance = ref(0)
+const touchStartCenter = ref({ x: 0, y: 0 })
+const isPinching = ref(false)
+
+// Map dragging functionality
+const isMapDragging = ref(false)
+const dragStartPos = ref({ x: 0, y: 0 })
+const dragStartTransform = ref({ translateX: 0, translateY: 0 })
 
 // Yarimstansiya pinpoints data - EASY TO EDIT
 // Coordinates are relative to individual region SVG maps (not main map)
@@ -648,6 +736,13 @@ const handleMapClick = (event) => {
       setTimeout(() => {
         selectedRegion.value = region
         showMapView.value = true // Show Google Maps by default
+        // Reset map zoom when switching regions
+        mapZoomTransform.value = {
+          scale: 1,
+          translateX: 0,
+          translateY: 0,
+          transition: 'transform 0.3s ease-out'
+        }
       }, 1500) // Match the transition duration
     }
   }
@@ -724,6 +819,181 @@ const toggleZoom = () => {
       translateX: 0,
       translateY: 0
     }
+  }
+}
+
+// Google Map zoom functions
+const zoomInMap = () => {
+  const newScale = Math.min(mapZoomTransform.value.scale * 1.5, 5)
+  mapZoomTransform.value = {
+    ...mapZoomTransform.value,
+    scale: newScale,
+    transition: 'transform 0.3s ease-out'
+  }
+}
+
+const zoomOutMap = () => {
+  const newScale = Math.max(mapZoomTransform.value.scale / 1.5, 0.5)
+  mapZoomTransform.value = {
+    ...mapZoomTransform.value,
+    scale: newScale,
+    transition: 'transform 0.3s ease-out'
+  }
+}
+
+const handleMapWheel = (event) => {
+  event.preventDefault()
+  const delta = event.deltaY > 0 ? 0.9 : 1.1
+  const newScale = Math.max(0.5, Math.min(5, mapZoomTransform.value.scale * delta))
+  
+  mapZoomTransform.value = {
+    ...mapZoomTransform.value,
+    scale: newScale,
+    transition: 'transform 0.1s ease-out'
+  }
+}
+
+const handleTouchStart = (event) => {
+  if (event.touches.length === 2) {
+    // Two finger pinch
+    isPinching.value = true
+    const touch1 = event.touches[0]
+    const touch2 = event.touches[1]
+    
+    touchStartDistance.value = Math.sqrt(
+      Math.pow(touch2.clientX - touch1.clientX, 2) + 
+      Math.pow(touch2.clientY - touch1.clientY, 2)
+    )
+    
+    touchStartCenter.value = {
+      x: (touch1.clientX + touch2.clientX) / 2,
+      y: (touch1.clientY + touch2.clientY) / 2
+    }
+  } else if (event.touches.length === 1 && mapZoomTransform.value.scale > 1) {
+    // Single finger drag
+    isMapDragging.value = true
+    dragStartPos.value = { x: event.touches[0].clientX, y: event.touches[0].clientY }
+    dragStartTransform.value = { 
+      translateX: mapZoomTransform.value.translateX, 
+      translateY: mapZoomTransform.value.translateY 
+    }
+    mapZoomTransform.value.transition = 'none'
+  }
+}
+
+const handleTouchMove = (event) => {
+  if (event.touches.length === 2 && isPinching.value) {
+    // Two finger pinch zoom
+    event.preventDefault()
+    
+    const touch1 = event.touches[0]
+    const touch2 = event.touches[1]
+    
+    const currentDistance = Math.sqrt(
+      Math.pow(touch2.clientX - touch1.clientX, 2) + 
+      Math.pow(touch2.clientY - touch1.clientY, 2)
+    )
+    
+    const scaleFactor = currentDistance / touchStartDistance.value
+    const newScale = Math.max(0.5, Math.min(5, mapZoomTransform.value.scale * scaleFactor))
+    
+    mapZoomTransform.value = {
+      ...mapZoomTransform.value,
+      scale: newScale,
+      transition: 'none'
+    }
+  } else if (event.touches.length === 1 && isMapDragging.value && mapZoomTransform.value.scale > 1) {
+    // Single finger drag
+    event.preventDefault()
+    
+    const deltaX = event.touches[0].clientX - dragStartPos.value.x
+    const deltaY = event.touches[0].clientY - dragStartPos.value.y
+    
+    mapZoomTransform.value = {
+      ...mapZoomTransform.value,
+      translateX: dragStartTransform.value.translateX + deltaX,
+      translateY: dragStartTransform.value.translateY + deltaY
+    }
+  }
+}
+
+const handleTouchEnd = () => {
+  isPinching.value = false
+  if (isMapDragging.value) {
+    isMapDragging.value = false
+  }
+  mapZoomTransform.value.transition = 'transform 0.3s ease-out'
+}
+
+// Mouse dragging functions
+const handleMapMouseDown = (event) => {
+  if (mapZoomTransform.value.scale > 1) {
+    isMapDragging.value = true
+    dragStartPos.value = { x: event.clientX, y: event.clientY }
+    dragStartTransform.value = { 
+      translateX: mapZoomTransform.value.translateX, 
+      translateY: mapZoomTransform.value.translateY 
+    }
+    mapZoomTransform.value.transition = 'none'
+  }
+}
+
+const handleMapMouseMove = (event) => {
+  if (isMapDragging.value && mapZoomTransform.value.scale > 1) {
+    const deltaX = event.clientX - dragStartPos.value.x
+    const deltaY = event.clientY - dragStartPos.value.y
+    
+    mapZoomTransform.value = {
+      ...mapZoomTransform.value,
+      translateX: dragStartTransform.value.translateX + deltaX,
+      translateY: dragStartTransform.value.translateY + deltaY
+    }
+  }
+}
+
+const handleMapMouseUp = () => {
+  if (isMapDragging.value) {
+    isMapDragging.value = false
+    mapZoomTransform.value.transition = 'transform 0.3s ease-out'
+  }
+}
+
+// PhotoSwipe Gallery Functions
+const openPhotoSwipe = async (index) => {
+  if (!selectedPinpoint.value?.images) return
+  
+  try {
+    const { default: PhotoSwipe } = await import('photoswipe')
+    
+    // Create PhotoSwipe items for v5
+    const items = selectedPinpoint.value.images.map((src, i) => ({
+      src: src,
+      width: 1200,
+      height: 800,
+      alt: `${selectedPinpoint.value.name} - Image ${i + 1}`
+    }))
+    
+    // Initialize PhotoSwipe v5
+    const gallery = new PhotoSwipe({
+      dataSource: items,
+      index: index,
+      pswpModule: () => import('photoswipe'),
+      mainClass: 'pswp--open',
+      showHideAnimationType: 'fade',
+      showAnimationDuration: 300,
+      hideAnimationDuration: 300,
+      showHideOpacity: true,
+      bgOpacity: 0.9,
+      spacing: 0.1,
+      allowPanToNext: true,
+      maxSpreadZoom: 3
+    })
+    
+    gallery.init()
+  } catch (error) {
+    console.error('PhotoSwipe error:', error)
+    // Fallback to simple modal
+    openImageModal()
   }
 }
 
@@ -818,6 +1088,13 @@ const closeRegionModal = () => {
   selectedPinpoint.value = null
   currentImageIndex.value = 0
   resetZoom()
+  // Reset map zoom when closing region modal
+  mapZoomTransform.value = {
+    scale: 1,
+    translateX: 0,
+    translateY: 0,
+    transition: 'transform 0.3s ease-out'
+  }
   console.log('closeRegionModal completed')
 }
 
@@ -1933,6 +2210,53 @@ onMounted(() => {
   height: 60px;
 }
 
+/* Map Zoom Controls */
+.map-zoom-controls {
+  position: absolute;
+  top: 130px;
+  left: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  z-index: 20;
+}
+
+.zoom-btn {
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  border: none;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: bold;
+  color: #31B1F0;
+  transition: all 0.3s ease;
+  user-select: none;
+}
+
+.zoom-btn:hover {
+  background: rgba(255, 255, 255, 1);
+  transform: scale(1.05);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+.zoom-btn:active {
+  transform: scale(0.95);
+}
+
+.zoom-separator {
+  width: 32px;
+  height: 1px;
+  background: rgba(49, 177, 240, 0.3);
+  margin: 0 auto;
+}
+
 /* Map Title Container */
 .map-title-container {
   flex: 1;
@@ -1964,6 +2288,25 @@ onMounted(() => {
   border-radius: 8px;
   overflow: hidden;
   box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.1);
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+.map-content.map-dragging {
+  cursor: grabbing;
+}
+
+.map-content.map-dragging .map-zoom-container {
+  transition: none !important;
+}
+
+.map-zoom-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
 }
 
 .map-view-image {
@@ -1971,16 +2314,35 @@ onMounted(() => {
   height: 100%;
   object-fit: cover;
   transition: transform 0.5s ease;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  user-drag: none;
 }
 
 /* Pinpoint Styles */
 .pinpoint-overlay {
   position: absolute;
-  transform: translate(-50%, -50%);
   cursor: pointer;
   z-index: 10;
   opacity: 0;
   animation: pinpointFadeIn 0.3s ease 0.8s forwards;
+  transition: transform 0.3s ease-out;
+}
+
+.pinpoint-overlay.pinpoint-clickable {
+  cursor: pointer;
+  filter: drop-shadow(0 2px 8px rgba(49, 177, 240, 0.3));
+}
+
+.pinpoint-overlay:not(.pinpoint-clickable) {
+  cursor: default;
+  opacity: 0.6;
 }
 
 @keyframes pinpointFadeIn {
@@ -1998,6 +2360,16 @@ onMounted(() => {
   width: 48px;
   height: 64px;
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  user-drag: none;
+  pointer-events: none;
 }
 
 /* Gallery Layout Styles */
@@ -2080,6 +2452,15 @@ onMounted(() => {
   object-fit: contain;
   border-radius: 12px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  user-drag: none;
 }
 
 .gallery-nav {
@@ -2398,5 +2779,65 @@ onMounted(() => {
   transform: scale(0.95) translateX(-20px);
   transition: opacity 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
               transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* PhotoSwipe Custom Styles for Tablet */
+.pswp {
+  z-index: 9999;
+}
+
+.pswp__bg {
+  background: rgba(0, 0, 0, 0.95);
+}
+
+.pswp__top-bar {
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(10px);
+}
+
+.pswp__button {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.pswp__button:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.1);
+}
+
+.pswp__counter {
+  color: white;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
+}
+
+.pswp__caption {
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(10px);
+}
+
+.pswp__caption__center {
+  color: white;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 500;
+}
+
+/* Tablet-specific PhotoSwipe optimizations */
+@media (max-width: 1024px) {
+  .pswp__button {
+    width: 60px;
+    height: 60px;
+    font-size: 24px;
+  }
+  
+  .pswp__top-bar {
+    padding: 20px;
+  }
+  
+  .pswp__caption {
+    padding: 20px;
+    font-size: 16px;
+  }
 }
 </style> 
