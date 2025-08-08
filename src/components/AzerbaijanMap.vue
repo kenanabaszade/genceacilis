@@ -17,7 +17,7 @@
     <div class="main-content">
       <!-- Left side - Map -->
       <div class="map-section">
-        <div class="map-container" :class="{ 'gm-active': selectedRegion && !showGallery }">
+        <div class="map-container" :class="{ 'gm-active': !!selectedRegion }">
 
          
           
@@ -355,7 +355,7 @@
                 </button>
               </div>
               <div class="gallery-title-container">
-                <h3 class="gallery-title">{{ selectedPinpoint?.name }}</h3>
+                <h3 class="gallery-title" lang="az">{{ selectedPinpoint?.name }}</h3>
               </div>
             </div>
             
@@ -1393,77 +1393,77 @@ const getRegionName = (region) => {
 const getRegionSubstations = (region) => {
   const substationData = {
     'baku': [
-      { name: 'Nərimanov-Təbriz YS', specs: '110 / 35 / 10' },
-      { name: 'Sabunçu 34 YS', specs: '110 / 35 / 10' },
-      { name: 'Sabunçu Pirşağı YS', specs: '110 / 35 / 10' },
-      { name: 'Səbail Badamdar YS', specs: '110 / 35 / 10' },
-      { name: 'Abşeron Əliağavahid YS', specs: '110 / 35 / 10' },
-      { name: 'Səbail Liman 2 YS', specs: '110 / 35 / 10' }
+      { name: 'NƏRİMANOV-TƏBRİZ YS', specs: '110 / 35 / 10' },
+      { name: 'SABUNÇU 34 YS', specs: '110 / 35 / 10' },
+      { name: 'SABUNÇU PİRŞAĞI YS', specs: '110 / 35 / 10' },
+      { name: 'SƏBAİL BADAMDAR YS', specs: '110 / 35 / 10' },
+      { name: 'ABŞERON ƏLİAĞAVAHİD YS', specs: '110 / 35 / 10' },
+      { name: 'SƏBAİL LİMAN 2 YS', specs: '110 / 35 / 10' }
     ],
     'sumqayit': [
-      { name: 'Sitalçay YS', specs: '110 / 35 / 10' },
+      { name: 'SİTALÇAY YS', specs: '110 / 35 / 10' },
     ],
     'xacmaz': [
-      { name: 'Xaçmaz EŞ', specs: '110 / 35 / 10' },
+      { name: 'XAÇMAZ EŞ', specs: '110 / 35 / 10' },
     ],
     'sirvan': [
-      { name: 'Şirvan EŞ', specs: '110 / 35 / 10' },
-      { name: 'Kürdəmir YS', specs: '110 / 35 / 10' },
+      { name: 'ŞİRVAN EŞ', specs: '110 / 35 / 10' },
+      { name: 'KÜRDƏMİR YS', specs: '110 / 35 / 10' },
     ],
     'qerb': [
-      { name: 'Gəncə EŞ', specs: '110 / 35 / 10' },
-      { name: 'Gəncə Mərkəz YS', specs: '110 / 35 / 10' },
-      { name: 'Tovuz YS', specs: '110 / 35 / 10' },
-      { name: 'Göygöl YS', specs: '110 / 35 / 10' }
+      { name: 'GƏNCƏ EŞ', specs: '110 / 35 / 10' },
+      { name: 'GƏNCƏ MƏRKƏZ YS', specs: '110 / 35 / 10' },
+      { name: 'TOVUZ YS', specs: '110 / 35 / 10' },
+      { name: 'GÖYGÖL YS', specs: '110 / 35 / 10' }
     ],
     'simalqerb': [
-      { name: 'Qəbələ EŞ', specs: '110 / 35 / 10' },
-      { name: 'İsmayıllı EŞ', specs: '110 / 35 / 10' },
-      { name: 'Qax EŞ', specs: '110 / 35 / 10' },
-      { name: 'Şəki EŞ', specs: '110 / 35 / 10' },
-      { name: 'Balakən EŞ', specs: '110 / 35 / 10' },
-      { name: 'Oğuz EŞ', specs: '110 / 35 / 10' },
-      { name: 'Şamaxı EŞ', specs: '110 / 35 / 10' },
-      { name: 'Zaqatala EŞ', specs: '110 / 35 / 10' }
+      { name: 'QƏBƏLƏ EŞ', specs: '110 / 35 / 10' },
+      { name: 'İSMIYİLLI EŞ', specs: '110 / 35 / 10' },
+      { name: 'QAX EŞ', specs: '110 / 35 / 10' },
+      { name: 'ŞƏKİ EŞ', specs: '110 / 35 / 10' },
+      { name: 'BALAKƏN EŞ', specs: '110 / 35 / 10' },
+      { name: 'OĞUZ EŞ', specs: '110 / 35 / 10' },
+      { name: 'ŞAMAXI EŞ', specs: '110 / 35 / 10' },
+      { name: 'ZAQATALA EŞ', specs: '110 / 35 / 10' }
     ],
     'merkezi-aran': [
-      { name: 'Ağdaş EŞ', specs: '110 / 35 / 10' },
-      { name: 'Naftalan EŞ', specs: '110 / 35 / 10' },
-      { name: 'Yevlax EŞ', specs: '110 / 35 / 10' },
-      { name: 'Goranboy EŞ', specs: '110 / 35 / 10' },
-      { name: 'Göyçay EŞ', specs: '110 / 35 / 10' },
-      { name: 'Ucar EŞ', specs: '110 / 35 / 10' },
-      { name: 'Mingəçevir EŞ', specs: '110 / 35 / 10' }
+      { name: 'AĞDAŞ EŞ', specs: '110 / 35 / 10' },
+      { name: 'NAFTALAN EŞ', specs: '110 / 35 / 10' },
+      { name: 'YEVLAX EŞ', specs: '110 / 35 / 10' },
+      { name: 'GORANBOY EŞ', specs: '110 / 35 / 10' },
+      { name: 'GÖYÇAY EŞ', specs: '110 / 35 / 10' },
+      { name: 'UCAR EŞ', specs: '110 / 35 / 10' },
+      { name: 'MİNGƏÇEVİR EŞ', specs: '110 / 35 / 10' }
     ],
     'aran': [
-      { name: 'Ağdam EŞ', specs: '110 / 35 / 10' },
-      { name: 'Ağcabədi EŞ', specs: '110 / 35 / 10' },
-      { name: 'Tərtər EŞ', specs: '110 / 35 / 10' },
-      { name: 'Bərdə EŞ', specs: '110 / 35 / 10' },
-      { name: 'Beyləqan EŞ', specs: '110 / 35 / 10' },
-      { name: 'Zərdab EŞ', specs: '110 / 35 / 10' },
-      { name: 'Füzuli EŞ', specs: '110 / 35 / 10' },
-      { name: 'İmişli EŞ', specs: '110 / 35 / 10' }
+      { name: 'AĞDAM EŞ', specs: '110 / 35 / 10' },
+      { name: 'AĞCABƏDİ EŞ', specs: '110 / 35 / 10' },
+      { name: 'TƏRTƏR EŞ', specs: '110 / 35 / 10' },
+      { name: 'BƏRDƏ EŞ', specs: '110 / 35 / 10' },
+      { name: 'BEYLƏQAN EŞ', specs: '110 / 35 / 10' },
+      { name: 'ZƏRDAB EŞ', specs: '110 / 35 / 10' },
+      { name: 'FÜZULİ EŞ', specs: '110 / 35 / 10' },
+      { name: 'İMİŞLİ EŞ', specs: '110 / 35 / 10' }
     ],
     'cenub': [
-      { name: 'Astara EŞ', specs: '110 / 35 / 10' },
-      { name: 'Biləsuvar EŞ', specs: '110 / 35 / 10' },
-      { name: 'Masallı EŞ', specs: '110 / 35 / 10' },
-      { name: 'Yardımlı EŞ', specs: '110 / 35 / 10' },
-      { name: 'Cəlilabad EŞ', specs: '110 / 35 / 10' },
-      { name: 'Lənkəran EŞ', specs: '110 / 35 / 10' },
-      { name: 'Lerik EŞ', specs: '110 / 35 / 10' }
+      { name: 'ASTARA EŞ', specs: '110 / 35 / 10' },
+      { name: 'BİLƏSUVAR EŞ', specs: '110 / 35 / 10' },
+      { name: 'MASALLI EŞ', specs: '110 / 35 / 10' },
+      { name: 'YARDIMLI EŞ', specs: '110 / 35 / 10' },
+      { name: 'CƏLİLABAD EŞ', specs: '110 / 35 / 10' },
+      { name: 'LƏNKƏRAN EŞ', specs: '110 / 35 / 10' },
+      { name: 'LERİK EŞ', specs: '110 / 35 / 10' }
     ],
     'qarabag': [
       { name: 'Zəfər YS', specs: '110 / 35 / 10' },
-      { name: 'Xankəndi YS', specs: '110 / 35 / 10' },
-      { name: 'Xocalı Əsgəran YS', specs: '110 / 35 / 10' },
+      { name: 'XANKƏNDİ YS', specs: '110 / 35 / 10' },
+      { name: 'XOCALI Əsgəran YS', specs: '110 / 35 / 10' },
       { name: 'Xocavənd 35 YS', specs: '110 / 35 / 10' },
       { name: 'Zoğalbulaq YS', specs: '110 / 35 / 10' },
       { name: 'Kəlbəcər YS', specs: '110 / 35 / 10' },
-      { name: 'Laçın Minkənd YS', specs: '110 / 35 / 10' },
-      { name: 'Malibəyli YS', specs: '110 / 35 / 10' },
-      { name: 'Sığnaq YS', specs: '110 / 35 / 10' }
+      { name: 'LAÇIN MİNKƏND YS', specs: '110 / 35 / 10' },
+      { name: 'MALİBƏYLI YS', specs: '110 / 35 / 10' },
+      { name: 'SIĞNAQ YS', specs: '110 / 35 / 10' }
     ],
     'naxcivan': [
       { name: 'Naxçıvan EŞ', specs: '110 / 35 / 10' },
@@ -1502,7 +1502,7 @@ const getGoogleMapFileName = (region) => {
     'qerb': 'qerbgooglemap.png',
     'simalqerb': 'simalqerbgooglemap.png',
     'merkezi-aran': 'merkeziarangooglemap.png',
-    'aran': 'merkeziarangooglemap.png', // Using same as merkezi-aran for now
+    'aran': 'arangooglemap.png', // Using same as merkezi-aran for now
     'cenub': 'cenubgooglemap.png', // Using same as merkezi-aran for now
     'qarabag': 'qarabaggooglemap.png',
     'naxcivan': 'naxcivangooglemap.png'
@@ -1638,7 +1638,7 @@ onMounted(() => {
 }
 
 .title {
-  font-size: 1.75rem;
+  font-size: clamp(1.25rem, 1.8vw, 2.25rem);
   font-weight: 700;
   font-family: 'Montserrat', sans-serif;
   color: #0E273C;
@@ -2376,24 +2376,25 @@ onMounted(() => {
 }
 
 .map-control-btn .control-icon {
-  width: 60px;
-  height: 60px;
+  width: clamp(36px, 4.2vw, 60px);
+  height: clamp(36px, 4.2vw, 60px);
 }
 
 /* Map Zoom Controls */
 .map-zoom-controls {
   position: absolute;
-  top: 130px;
-  left: 30px;
+  top: clamp(70px, 12vh, 130px);
+  left: clamp(12px, 2.2vw, 30px);
   display: flex;
   flex-direction: column;
+  margin-top: 20px;
   gap: 4px;
   z-index: 20;
 }
 
 .zoom-btn {
-  width: 48px;
-  height: 48px;
+  width: clamp(38px, 3.6vw, 56px);
+  height: clamp(38px, 3.6vw, 56px);
   border-radius: 8px;
   border: none;
   background: rgba(255, 255, 255, 0.95);
@@ -2403,7 +2404,7 @@ onMounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 24px;
+  font-size: clamp(18px, 2vw, 24px);
   font-weight: bold;
   color: #31B1F0;
   transition: all 0.3s ease;
@@ -2462,15 +2463,14 @@ onMounted(() => {
 
 .map-title {
   margin: 0;
-    font-size: 1.7rem;
-    font-weight: 700;
-    font-family: 'Montserrat', sans-serif;
-    color: #31B1F0;
-    font-weight: 900;
-    text-align: right;
-    white-space: nowrap;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+  font-size: clamp(1.1rem, 1.6vw, 2.1rem);
+  font-weight: 900;
+  font-family: 'Montserrat', sans-serif;
+  color: #31B1F0;
+  text-align: right;
+  white-space: nowrap;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 /* Map Content */
@@ -2553,8 +2553,8 @@ onMounted(() => {
 }
 
 .pinpoint-icon {
-  width: 48px;
-  height: 64px;
+  width: clamp(28px, 4vw, 48px);
+  height: clamp(36px, 5.4vw, 64px);
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
   user-select: none;
   -webkit-user-select: none;
@@ -2623,11 +2623,10 @@ onMounted(() => {
   border-radius: 8px;
   overflow: hidden;
   gap: 20px;
-  padding: 20px;
 }
 
 .gallery-main {
-  flex: 3;
+  flex: 3.4;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2831,7 +2830,7 @@ onMounted(() => {
   color: #31B1F0;
   text-align: right;
   white-space: nowrap;
-  text-transform: uppercase;
+  text-transform: none;
   letter-spacing: 0.5px;
 }
 
