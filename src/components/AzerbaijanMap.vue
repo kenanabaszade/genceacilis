@@ -1792,7 +1792,7 @@ onMounted(() => {
   flex-direction: column;
   gap: 24px;
   margin-top: 50px;
-  overflow-y: auto;
+  /* overflow-y: auto; */
   max-height: 100vh;
 }
 
@@ -1801,6 +1801,7 @@ onMounted(() => {
     border-radius: 12px;
     padding: 0;
     border: 1px solid #00000012;
+    box-shadow: 0 7px 23px 0 rgba(100, 100, 111, 0.2);
 }
 
 .card-title {
