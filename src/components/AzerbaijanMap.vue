@@ -17,24 +17,25 @@
     <div class="main-content">
       <!-- Left side - Map -->
       <div class="map-section">
-        <div class="map-container">
+        <div class="map-container" :class="{ 'gm-active': selectedRegion && !showGallery }">
 
          
           
           <!-- Main Azerbaijan Map -->
-          <svg v-if="!selectedRegion" 
+          <svg 
                id="Layer_2" 
                data-name="Layer 2" 
                xmlns="http://www.w3.org/2000/svg" 
                viewBox="0 0 1046.41 834.24" 
                @click="handleMapClick" 
                class="main-map"
+               :class="{ 'is-hidden': !!selectedRegion }"
                :style="{
-                 transform: `translate3d(${zoomTransform.translateX}px, ${zoomTransform.translateY}px, 0) scale(${zoomTransform.scale})`,
-                 transformOrigin: 'center',
-                 transition: 'transform 1.5s cubic-bezier(0.68, -0.55, 0.265, 1.55)',
-                 willChange: 'transform'
-               }">
+                  transform: `translate3d(${zoomTransform.translateX}px, ${zoomTransform.translateY}px, 0) scale(${zoomTransform.scale})`,
+                  transformOrigin: 'center',
+                  transition: 'transform 1.5s cubic-bezier(0.68, -0.55, 0.265, 1.55), opacity 1.6s cubic-bezier(0.22, 0.61, 0.36, 1)',
+                  willChange: 'transform, opacity'
+                }">
  
   <g id="Layer_1-2" data-name="Layer 1">
     <g>
@@ -244,72 +245,76 @@
 
 
           <!-- Google Maps View -->
-          <div v-show="selectedRegion && !showGallery" class="map-view-container" :class="{ 'map-view-enter': selectedRegion && !showGallery }">
-            <!-- Map Header with Controls -->
-            <div class="map-header-container">
-              <div class="map-controls">
-                <button class="map-control-btn home-btn" @click="closeRegionModal">
-                  <img src="/icons/home.svg" alt="Home" class="control-icon" />
-                </button>
-                <button class="map-control-btn back-btn" @click="handleBackButton">
-                  <img src="/icons/leftarrowwithbg.svg" alt="Go Back" class="control-icon" />
-                </button>
-                <button class="map-control-btn left-btn" @click="handleLeftClick">
-                  <img src="/icons/leftarrow.svg" alt="Left" class="control-icon" />
-                </button>
-                <button class="map-control-btn right-btn" @click="handleRightClick">
-                  <img src="/icons/rightarrow.svg" alt="Right" class="control-icon" />
-                </button>
-              </div>
-              <div class="map-title-container">
-                <h3 class="map-title">{{ getRegionName(selectedRegion) }}</h3>
-              </div>
-            </div>
-            
-            <div class="map-content" 
-                 ref="mapContainer"
-                 @wheel="handleMapWheel"
-                 @mousedown="handleMapMouseDown"
-                 @mousemove="handleMapMouseMove"
-                 @mouseup="handleMapMouseUp"
-                 @mouseleave="handleMapMouseUp"
-                 @touchstart="handleTouchStart"
-                 @touchmove="handleTouchMove"
-                 @touchend="handleTouchEnd"
-                 @contextmenu.prevent
-                 :class="{ 'map-dragging': isMapDragging }">
-              <div class="map-zoom-container"
-                   :style="{
-                     transform: `translate3d(${mapZoomTransform.translateX}px, ${mapZoomTransform.translateY}px, 0) scale(${mapZoomTransform.scale})`,
-                     transformOrigin: 'center',
-                     transition: mapZoomTransform.transition,
-                     willChange: 'transform'
-                   }">
-                <img :src="`/googlemaps/${getGoogleMapFileName(selectedRegion)}`" 
-                     :alt="`${getRegionName(selectedRegion)} Google Map`" 
-                     class="map-view-image" />
-                
-                <!-- Yarimstansiya Pinpoints on Google Map -->
-                <div v-for="pinpoint in getVisiblePinpoints()" 
-                     :key="pinpoint.id" 
-                     class="pinpoint-overlay"
-                     :class="{ 'pinpoint-clickable': mapZoomTransform.scale >= 1 }"
-                     :style="{ 
-                       left: pinpoint.x + '%', 
-                       top: pinpoint.y + '%',
-                       transform: `translate(-50%, -50%) scale(${1 / mapZoomTransform.scale})`,
-                       pointerEvents: mapZoomTransform.scale >= 1 ? 'auto' : 'none'
-                     }"
-                     @click.stop="handlePinPointClick(pinpoint)">
-                  <img src="/icons/pinpoint.svg" 
-                       alt="Yarımstansiya" 
-                       class="pinpoint-icon" />
+          <transition name="view-fade">
+            <div v-if="selectedRegion && !showGallery" class="map-view-container">
+              <!-- Map Header with Controls -->
+              <div class="map-header-container">
+                <div class="map-controls">
+                  <button class="map-control-btn home-btn" @click="closeRegionModal">
+                    <img src="/icons/home.svg" alt="Home" class="control-icon" />
+                  </button>
+                  <button class="map-control-btn back-btn" @click="handleBackButton">
+                    <img src="/icons/leftarrowwithbg.svg" alt="Go Back" class="control-icon" />
+                  </button>
+                  <button class="map-control-btn left-btn" @click="handleLeftClick">
+                    <img src="/icons/leftarrow.svg" alt="Left" class="control-icon" />
+                  </button>
+                  <button class="map-control-btn right-btn" @click="handleRightClick">
+                    <img src="/icons/rightarrow.svg" alt="Right" class="control-icon" />
+                  </button>
+                </div>
+                <div class="map-title-container">
+                  <h3 class="map-title">{{ getRegionName(selectedRegion) }}</h3>
                 </div>
               </div>
-            </div>
-            
-            <!-- Zoom Controls for Google Map -->
-                          <div class="map-zoom-controls">
+
+              <div class="map-content" 
+                   ref="mapContainer"
+                   @wheel="handleMapWheel"
+                   @mousedown="handleMapMouseDown"
+                   @mousemove="handleMapMouseMove"
+                   @mouseup="handleMapMouseUp"
+                   @mouseleave="handleMapMouseUp"
+                   @touchstart="handleTouchStart"
+                   @touchmove="handleTouchMove"
+                   @touchend="handleTouchEnd"
+                   @contextmenu.prevent
+                   :class="{ 'map-dragging': isMapDragging }">
+                <div class="map-zoom-container"
+                     :style="{
+                       transform: `translate3d(${mapZoomTransform.translateX}px, ${mapZoomTransform.translateY}px, 0) scale(${mapZoomTransform.scale})`,
+                       transformOrigin: 'center',
+                       transition: mapZoomTransform.transition,
+                       willChange: 'transform'
+                     }">
+                <transition name="image-fade" mode="out-in">
+                  <img :key="selectedRegion"
+                       :src="`/googlemaps/${getGoogleMapFileName(selectedRegion)}`" 
+                       :alt="`${getRegionName(selectedRegion)} Google Map`" 
+                       class="map-view-image" />
+                </transition>
+                  
+                  <!-- Yarimstansiya Pinpoints on Google Map -->
+                  <div v-for="pinpoint in getVisiblePinpoints()" 
+                       :key="pinpoint.id" 
+                       class="pinpoint-overlay"
+                       :class="{ 'pinpoint-clickable': mapZoomTransform.scale >= 1 }"
+                       :style="{ 
+                         left: pinpoint.x + '%', 
+                         top: pinpoint.y + '%',
+                         transform: `translate(-50%, -50%) scale(${1 / mapZoomTransform.scale})`,
+                         pointerEvents: mapZoomTransform.scale >= 1 ? 'auto' : 'none'
+                       }"
+                       @click.stop="handlePinPointClick(pinpoint)">
+                    <img src="/icons/pinpoint.svg" 
+                         alt="Yarımstansiya" 
+                         class="pinpoint-icon" />
+                  </div>
+                </div>
+              </div>
+
+              <!-- Zoom Controls for Google Map -->
+              <div class="map-zoom-controls">
                 <button class="zoom-btn zoom-in" @click="zoomInMap">
                   <span>+</span>
                 </button>
@@ -326,7 +331,8 @@
                   <img src="/icons/tablerefresh.svg" alt="Reset" class="reset-icon" />
                 </button>
               </div>
-          </div>
+            </div>
+          </transition>
 
 
 
@@ -897,15 +903,14 @@ const handleMapClick = (event) => {
   if (target.classList.contains('map-region')) {
     const region = target.getAttribute('data-region')
     if (region) {
-      // First zoom to the region on the main map
+      // First, perform the zoom-in animation on the main SVG
       zoomToRegion(target)
-      // Then set the selected region after zoom animation
+      // After the zoom completes, crossfade to the Google Map view
       setTimeout(() => {
         selectedRegion.value = region
-        showMapView.value = true // Show Google Maps by default
-        // Reset map zoom when switching regions
+        showMapView.value = true
         resetMapView()
-      }, 1500) // Match the transition duration
+      }, 1000)  
     }
   }
 }
@@ -1017,22 +1022,24 @@ const handleMapWheel = (event) => {
 
 const handleTouchStart = (event) => {
   if (event.touches.length === 2) {
-    // Two finger pinch
-    isPinching.value = true
-    const touch1 = event.touches[0]
-    const touch2 = event.touches[1]
-    
-    touchStartDistance.value = Math.sqrt(
-      Math.pow(touch2.clientX - touch1.clientX, 2) + 
-      Math.pow(touch2.clientY - touch1.clientY, 2)
-    )
-    
-    touchStartCenter.value = {
-      x: (touch1.clientX + touch2.clientX) / 2,
-      y: (touch1.clientY + touch2.clientY) / 2
+    // Two finger pinch: allow only when zoomed in beyond default
+    if (mapZoomTransform.value.scale > 1) {
+      isPinching.value = true
+      const touch1 = event.touches[0]
+      const touch2 = event.touches[1]
+      
+      touchStartDistance.value = Math.sqrt(
+        Math.pow(touch2.clientX - touch1.clientX, 2) + 
+        Math.pow(touch2.clientY - touch1.clientY, 2)
+      )
+      
+      touchStartCenter.value = {
+        x: (touch1.clientX + touch2.clientX) / 2,
+        y: (touch1.clientY + touch2.clientY) / 2
+      }
     }
-  } else if (event.touches.length === 1 && mapZoomTransform.value.scale >= 1) {
-    // Single finger drag
+  } else if (event.touches.length === 1 && mapZoomTransform.value.scale > 1) {
+    // Single finger drag: only when zoomed in
     isMapDragging.value = true
     dragStartPos.value = { x: event.touches[0].clientX, y: event.touches[0].clientY }
     dragStartTransform.value = { 
@@ -1064,7 +1071,7 @@ const handleTouchMove = (event) => {
       scale: newScale,
       transition: 'none'
     }
-  } else if (event.touches.length === 1 && isMapDragging.value && mapZoomTransform.value.scale >= 1) {
+  } else if (event.touches.length === 1 && isMapDragging.value && mapZoomTransform.value.scale > 1) {
     // Single finger drag
     event.preventDefault()
     
@@ -1099,7 +1106,7 @@ const resetMapView = () => {
 
 // Mouse dragging functions
 const handleMapMouseDown = (event) => {
-  if (mapZoomTransform.value.scale >= 1) {
+  if (mapZoomTransform.value.scale > 1) {
     isMapDragging.value = true
     dragStartPos.value = { x: event.clientX, y: event.clientY }
     dragStartTransform.value = { 
@@ -1111,7 +1118,7 @@ const handleMapMouseDown = (event) => {
 }
 
 const handleMapMouseMove = (event) => {
-  if (isMapDragging.value && mapZoomTransform.value.scale >= 1) {
+  if (isMapDragging.value && mapZoomTransform.value.scale > 1) {
     const deltaX = event.clientX - dragStartPos.value.x
     const deltaY = event.clientY - dragStartPos.value.y
     
@@ -1368,17 +1375,17 @@ const getVisiblePinpoints = () => {
 
 const getRegionName = (region) => {
   const regionNames = {
-    'baku': 'Bakı RETSİ',
-    'sumqayit': 'Sumqayıt RETSİ',
-    'xacmaz': 'Xaçmaz RETSİ',
-    'sirvan': 'Şirvan RETSİ',
-    'qerb': 'Qərb RETSİ',
-    'simalqerb': 'Şimal Qərb RETSİ',
-    'merkezi-aran': 'Mərkəzi Aran RETSİ',
-    'aran': 'Aran RETSİ',
-    'cenub': 'Cənub RETSİ',
-    'qarabag': 'Qarabağ RETSİ',
-    'naxcivan': 'Naxçıvan RETSİ'
+    'baku': 'BAKI RETSİ',
+    'sumqayit': 'SUMQAYIT RETSİ',
+    'xacmaz': 'XAÇMAZ RETSİ',
+    'sirvan': 'ŞİRVAN RETSİ',
+    'qerb': 'QƏRB RETSİ',
+    'simalqerb': 'ŞİMAL QƏRB RETSİ',
+    'merkezi-aran': 'MƏRKƏZİ ARAN RETSİ',
+    'aran': 'ARAN RETSİ',
+    'cenub': 'CƏNUB RETSİ',
+    'qarabag': 'QARABAĞ RETSİ',
+    'naxcivan': 'NAXÇIVAN RETSİ'
   }
   return regionNames[region] || region
 }
@@ -1496,7 +1503,7 @@ const getGoogleMapFileName = (region) => {
     'simalqerb': 'simalqerbgooglemap.png',
     'merkezi-aran': 'merkeziarangooglemap.png',
     'aran': 'merkeziarangooglemap.png', // Using same as merkezi-aran for now
-    'cenub': 'merkeziarangooglemap.png', // Using same as merkezi-aran for now
+    'cenub': 'cenubgooglemap.png', // Using same as merkezi-aran for now
     'qarabag': 'qarabaggooglemap.png',
     'naxcivan': 'naxcivangooglemap.png'
   }
@@ -1598,6 +1605,7 @@ onMounted(() => {
     position: relative;
     z-index: 10;
     text-align: center;
+    margin-right: 80px;
     overflow: hidden;
     justify-content: center;
     display: flex
@@ -1717,17 +1725,31 @@ onMounted(() => {
   transform: translateZ(0);
 }
 
+/* Only show outer shadow when Google Map view is active */
+.map-container.gm-active {
+  box-shadow: 0 7px 23px 0 rgba(100, 100, 111, 0.2);
+  border-radius: 12px;
+}
+
 .main-map {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: contain;
-  transition: all 0.5s ease;
-  will-change: transform;
+  z-index: 1;
+  transition: opacity 1.6s cubic-bezier(0.22, 0.61, 0.36, 1);
+  will-change: opacity;
   transform-origin: center;
   /* Performance optimizations */
   backface-visibility: hidden;
   perspective: 1000px;
   transform-style: preserve-3d;
+}
+
+.main-map.is-hidden {
+  opacity: 0;
+  pointer-events: none;
 }
 
 /* Region Detail Container */
@@ -1779,7 +1801,6 @@ onMounted(() => {
     border-radius: 12px;
     padding: 0;
     border: 1px solid #00000012;
-     
 }
 
 .card-title {
@@ -1791,6 +1812,10 @@ onMounted(() => {
 
 .table-container {
   overflow-x: auto;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 7px 23px 0 rgba(100, 100, 111, 0.2);
+  overflow: hidden;
 }
 
 .data-table {
@@ -2277,39 +2302,37 @@ onMounted(() => {
 
 /* Map View Styles */
 .map-view-container {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
-  position: relative;
   display: flex;
   flex-direction: column;
   background-color: #F5FCFF;
   border-radius: 12px;
   padding: 20px;
+  z-index: 2;
+  border: 0.42px solid #6c9daf6b;
+  box-shadow: 3px 0px 8px -1px rgba(2, 43, 64, 0.15);
+}
+
+/* Transition for Google map view */
+.view-fade-enter-active, .view-fade-leave-active {
+  transition: opacity 1.4s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.view-fade-enter-from, .view-fade-leave-to {
   opacity: 0;
-  transform: scale(0.8) translateY(50px);
-  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  animation: mapViewSlideIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+.view-fade-enter-active {
+  transition-delay: 300ms;
 }
 
-@keyframes mapViewSlideIn {
-  0% {
-    opacity: 0;
-    transform: scale(0.8) translateY(0);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-  }
+/* Crossfade when changing region image */
+.image-fade-enter-active, .image-fade-leave-active {
+  transition: opacity 1s cubic-bezier(0.22, 0.61, 0.36, 1);
 }
-
-.map-view-enter {
-  opacity: 1;
-  transform: scale(1);
-}
-
-.map-view-container:not(.map-view-enter) {
+.image-fade-enter-from, .image-fade-leave-to {
   opacity: 0;
-  transform: scale(0.8);
 }
 
 /* Map Header Container */
