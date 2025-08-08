@@ -1801,7 +1801,7 @@ onMounted(() => {
     border-radius: 12px;
     padding: 0;
     border: 1px solid #00000012;
-    box-shadow: 0 7px 23px 0 rgba(100, 100, 111, 0.2);
+    box-shadow: 0 7px 23px 0 rgb(11 11 78 / 8%);
 }
 
 .card-title {
@@ -2620,6 +2620,7 @@ onMounted(() => {
   flex: 1;
   min-height: 0;
   background: #f5fcff;
+  margin-top: 38px;
   border-radius: 8px;
   overflow: hidden;
   gap: 20px;
@@ -2660,14 +2661,14 @@ onMounted(() => {
 
 .gallery-nav {
   position: absolute;
-  top: 40%;
+  top: 9%;
   transform: translateY(-50%);
-  background: none;
+  background: #fffffff2;
   color: white;
   border: none;
   width: 48px;
   height: 48px;
-  border-radius: 50%;
+  border-radius: 4px;
   border: none;
   cursor: pointer;
   display: flex;
@@ -2678,8 +2679,8 @@ onMounted(() => {
 }
 
 .nav-icon {
-  width: 50px;
-  height: 50px;
+  width: 30px;
+    height: 35px;
 }
 
  
@@ -2688,7 +2689,7 @@ onMounted(() => {
 }
 
 .gallery-next {
-  right: 16px;
+  left: 10%;
 }
 
 .gallery-thumbnails {
