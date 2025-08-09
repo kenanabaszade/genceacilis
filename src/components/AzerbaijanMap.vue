@@ -419,7 +419,7 @@
                 </tr>
                 <tr>
                   <th class="table-header-light-blue">
-                    {{ selectedPinpoint ? 'BMKZ Y/S 110/35/6 kV' : 'Yenidən Qurulan Yarımstansiyalar' }}
+                    {{ selectedPinpoint ? 'BMKZ YS 110/35/6 kV' : 'Yenidən Qurulan Yarımstansiyalar' }}
                   </th>
                   <th class="table-header-light-blue" style="text-align: right !important;">
                     <div class="count-badge">
@@ -600,10 +600,10 @@ const pinpoints = ref([
   // Baku Region Pinpoints - Google Map Coordinates
   { 
     id: 'baku-1', 
-    x: 45,  // Nərimanov area
-    y: 35,  
+    x: 55,  // Nərimanov area
+    y: 60,  
     region: 'baku',
-    name: 'Nərimanov-Təbriz Y/S',
+    name: 'NƏRİMANOV-TƏBRİZ YS',
     images: [
       '/imgs/baku/nerimanov-tebriz-ys/1.jpg',
       '/imgs/baku/nerimanov-tebriz-ys/2.jpg',
@@ -612,10 +612,10 @@ const pinpoints = ref([
   },
   { 
     id: 'baku-2', 
-    x: 42,  // Sabunçu area
-    y: 38,  
+    x: 62,  // Sabunçu area
+    y: 48,  
     region: 'baku',
-    name: 'Sabunçu 34 Y/S',
+    name: 'SABUNÇU 34 YS',
     images: [
       '/imgs/baku/sabuncu-34-ys/1.jpg',
       '/imgs/baku/sabuncu-34-ys/2.jpg',
@@ -624,10 +624,10 @@ const pinpoints = ref([
   },
   { 
     id: 'baku-3', 
-    x: 40,  // Sabunçu Pirşağı area
-    y: 42,  
+    x: 55,  // Sabunçu Pirşağı area
+    y: 18,  
     region: 'baku',
-    name: 'Sabunçu Pirşağı Y/S',
+    name: 'SABUNÇU PİRŞAĞI YS',
     images: [
       '/imgs/baku/sabuncu-pirsagi-ys/1.jpg',
       '/imgs/baku/sabuncu-pirsagi-ys/2.jpg',
@@ -636,10 +636,10 @@ const pinpoints = ref([
   },
   { 
     id: 'baku-4', 
-    x: 48,  // Səbail area
-    y: 45,  
+    x: 44,  // Səbail area
+    y: 80,  
     region: 'baku',
-    name: 'Səbail Badamdar Y/S',
+    name: 'SƏBAİL BADAMDAR YS',
     images: [
       '/imgs/baku/sebail-badamdar-ys/1.jpg',
       '/imgs/baku/sebail-badamdar-ys/2.jpg',
@@ -649,9 +649,9 @@ const pinpoints = ref([
   { 
     id: 'baku-5', 
     x: 35,  // Abşeron area
-    y: 30,  
+    y: 42,  
     region: 'baku',
-    name: 'Abşeron Əliağa Vahid Y/S',
+    name: 'ABŞERON ƏLİAĞA VAHİD YS',
     images: [
       '/imgs/baku/abseron-eliagavahid-ys/1.jpg',
       '/imgs/baku/abseron-eliagavahid-ys/2.jpg',
@@ -660,10 +660,10 @@ const pinpoints = ref([
   },
   { 
     id: 'baku-6', 
-    x: 50,  // Səbail Liman area
-    y: 48,  
+    x: 48,  // Səbail  Liman
+    y: 83,
     region: 'baku',
-    name: 'Səbail Liman 2 Y/S',
+    name: 'SƏBAİL LİMAN 2 YS',
     images: [
       '/imgs/baku/sebail-liman2-ys/1.jpg',
       '/imgs/baku/sebail-liman2-ys/2.jpg',
@@ -673,23 +673,49 @@ const pinpoints = ref([
   // Sumqayit Region Pinpoints - Google Map Coordinates
   { 
     id: 'sumqayit-1', 
-    x: 45,  // Sitalçay area
-    y: 25,  
+    x: 43,  // Sitalçay area
+    y: 28,  
     region: 'sumqayit',
-    name: 'Sitalçay Y/S',
+    name: 'SİTALÇAY YS',
     images: [
       '/imgs/sumqayit/sitalcay-ys/1.jpg',
       '/imgs/sumqayit/sitalcay-ys/2.jpg',
       '/imgs/sumqayit/sitalcay-ys/3.jpg'
     ]
   },
+  // Merkezi aran Region Pinpoints - Google Map Coordinates
+  { 
+    id: 'merkezi-aran-1', 
+    x: 50,  // Sitalçay area
+    y: 47,  
+    region: 'merkezi-aran',
+    name: 'AĞDAŞ EŞ',
+    images: [
+      '/imgs/merkeziaran/agdas-es/1.jpg',
+      '/imgs/merkeziaran/agdas-es/2.jpg',
+      '/imgs/merkeziaran/agdas-es/3.jpg'
+    ]
+  },
+  { 
+    id: 'merkezi-aran-2', 
+    x: 40,  // Sitalçay area
+    y: 40,  
+    region: 'merkezi-aran',
+    name: 'MİNGƏÇEVİR KARXANA YS',
+    images: [
+      '/imgs/merkeziaran/mingecevir-karxana-ys/1.jpg',
+      '/imgs/merkeziaran/mingecevir-karxana-ys/2.jpg',
+      '/imgs/merkeziaran/mingecevir-karxana-ys/3.jpg'
+    ]
+  },
+  
   // Xacmaz Region Pinpoints - Google Map Coordinates
   { 
     id: 'xacmaz-1', 
-    x: 50,  // Xaçmaz center
-    y: 35,  
+    x: 40,  // Xaçmaz center
+    y: 27,  
     region: 'xacmaz',
-    name: 'Xaçmaz E/S',
+    name: 'XAÇMAZ EŞ',
     images: [
       '/imgs/xacmaz/xacmaz-es/1.jpg',
       '/imgs/xacmaz/xacmaz-es/2.jpg',
@@ -697,29 +723,94 @@ const pinpoints = ref([
     ]
   },
   // Sirvan Region Pinpoints - Google Map Coordinates
+  
+  //   aran Region Pinpoints - Google Map Coordinates
   { 
-    id: 'sirvan-1', 
-    x: 45,  // Kürdəmir area
-    y: 40,  
-    region: 'sirvan',
-    name: 'Kürdəmir Y/S',
+    id: 'aran-1', 
+    x: 7,  // Xaçmaz center
+    y: 42,  
+    region: 'aran',
+    name: 'AĞDAM EŞ',
     images: [
-      '/imgs/sirvan/kurdemir-ys/1.jpg',
-      '/imgs/sirvan/kurdemir-ys/2.jpg',
-      '/imgs/sirvan/kurdemir-ys/3.jpg'
+      '/imgs/aran/agdam-tezekend-ys/1.jpg',
+      '/imgs/aran/agdam-tezekend-ys/2.jpg',
+      '/imgs/aran/agdam-tezekend-ys/3.jpg'
     ]
   },
+  { 
+    id: 'aran-2', 
+    x: 20,  // Xaçmaz center
+    y: 7,  
+    region: 'aran',
+    name: 'BƏRDƏ ŞİRVANLI YS',
+    images: [
+      '/imgs/aran/berde-sirvanli-ys/1.jpg',
+      '/imgs/aran/berde-sirvanli-ys/2.jpg',
+      '/imgs/aran/berde-sirvanli-ys/3.jpg'
+    ]
+  },
+  { 
+    id: 'aran-3', 
+    x: 20,  // Xaçmaz center
+    y: 10,   
+    region: 'aran',
+    name: 'BƏRDƏ SƏMƏD VURĞUN YS',
+    images: [
+      '/imgs/aran/berde-semedvurgun-ys/1.jpg',
+      '/imgs/aran/berde-semedvurgun-ys/2.jpg',
+      '/imgs/aran/berde-semedvurgun-ys/3.jpg'
+    ]
+  },
+  { 
+    id: 'aran-4', 
+    x: 50,  // Xaçmaz center
+    y: 19,  
+    region: 'aran',
+    name: 'ZƏRDAB EŞ',
+    images: [
+      '/imgs/aran/zerdab-es/1.jpg',
+      '/imgs/aran/zerdab-es/2.jpg',
+      '/imgs/aran/zerdab-es/3.jpg'
+    ]
+  },
+  { 
+    id: 'aran-5', 
+    x: 20,  // Xaçmaz center
+    y:85,  
+    region: 'aran',
+    name: 'FİZULİ MAHMUDLU YS',
+    images: [
+      '/imgs/aran/fizuli-mahmudlu-ys/1.jpg',
+      '/imgs/aran/fizuli-mahmudlu-ys/2.jpg',
+      '/imgs/aran/fizuli-mahmudlu-ys/3.jpg'
+    ]
+  },
+  // Sirvan Region Pinpoints - Google Map Coordinates
+  
   // Qerb Region Pinpoints - Google Map Coordinates
   { 
     id: 'qerb-1', 
     x: 25,  // Tovuz area
     y: 30,  
     region: 'qerb',
-    name: 'Tovuz Y/S',
+    name: 'TOVUZ YS',
     images: [
       '/imgs/qerb/tovuz-ys/1.jpg',
       '/imgs/qerb/tovuz-ys/2.jpg',
       '/imgs/qerb/tovuz-ys/3.jpg'
+    ]
+  },
+  // Qerb Region Pinpoints - Google Map Coordinates
+  { 
+    id: 'cenub-1', 
+    x: 38 ,  // Tovuz area
+    y: 77,  
+    region: 'cenub',
+    name: 'LƏNKARAN EŞ',
+    images: [
+      '/imgs/cenub/lenkeran-es/1.jpg',
+      '/imgs/cenub/lenkeran-es/2.jpg',
+      '/imgs/cenub/lenkeran-es/3.jpg'
     ]
   },
   { 
@@ -727,7 +818,7 @@ const pinpoints = ref([
     x: 54,  // Göygöl area
     y: 65,  
     region: 'qerb',
-    name: 'Göygöl Y/S',
+    name: 'GÖYGÖL YS',
     images: [
       '/imgs/qerb/goygol-ys/1.jpg',
       '/imgs/qerb/goygol-ys/2.jpg',
@@ -735,11 +826,35 @@ const pinpoints = ref([
     ]
   },
   { 
+    id: 'sirvan-1', 
+    x: 15,  // Sitalçay area
+    y: 10,  
+    region: 'sirvan',
+    name: 'KÜRDƏMİR YS',
+    images: [
+      '/imgs/sirvan/kurdemir-ys/1.jpg',
+      '/imgs/sirvan/kurdemir-ys/2.jpg',
+      '/imgs/sirvan/kurdemir-ys/3.jpg'
+    ]
+  },
+  { 
+    id: 'sirvan-2', 
+    x: 14,  // Sitalçay area
+    y: 10,  
+    region: 'sirvan',
+    name: 'KÜRDƏMİR EŞ',
+    images: [
+      '/imgs/sirvan/kurdemir-es/1.jpg',
+      '/imgs/sirvan/kurdemir-es/2.jpg',
+      '/imgs/sirvan/kurdemir-es/3.jpg'
+    ]
+  },
+  { 
     id: 'qerb-3', 
     x: 55,  // Gəncə area
     y: 50,  
     region: 'qerb',
-    name: 'Gəncə E/S',
+    name: 'GƏNCƏ EŞ',
     images: [
       '/imgs/qerb/gence-es/1.jpg',
       '/imgs/qerb/gence-es/2.jpg',
@@ -751,7 +866,7 @@ const pinpoints = ref([
     x: 55,  // Gəncə Mərkəz area
     y: 55,  
     region: 'qerb',
-    name: 'Gəncə Mərkəz Y/S',
+    name: 'GƏNCƏ MƏRKƏZ YS',
     images: [
       '/imgs/qerb/gence-merkez-ys/1.jpg',
       '/imgs/qerb/gence-merkez-ys/2.jpg',
@@ -764,7 +879,7 @@ const pinpoints = ref([
     x: 30,  // Xocalı area
     y: 40,  
     region: 'qarabag',
-    name: 'Xocalı Əsgəran',
+    name: 'XOCALI ƏSGƏRAN YS',
     images: [
       '/imgs/qarabag/xocali-esgeran/1.jpg',
       '/imgs/qarabag/xocali-esgeran/2.jpg',
@@ -776,7 +891,7 @@ const pinpoints = ref([
     x: 35,  // Zəfər area
     y: 35,  
     region: 'qarabag',
-    name: 'Zəfər Y/S',
+    name: 'ZƏFƏR YS',
     images: [
       '/imgs/qarabag/zefer-ys/1.jpg',
       '/imgs/qarabag/zefer-ys/2.jpg',
@@ -788,7 +903,7 @@ const pinpoints = ref([
     x: 40,  // Signa area
     y: 20,  
     region: 'qarabag',
-    name: 'Signa',
+    name: 'SIĞNAQ YS',
     images: [
       '/imgs/qarabag/signa/1.jpg',
       '/imgs/qarabag/signa/2.jpg',
@@ -800,7 +915,7 @@ const pinpoints = ref([
     x: 32,  // Malıbəyli area
     y: 28,  
     region: 'qarabag',
-    name: 'Malıbəyli',
+    name: 'MALIBƏYLİ YS',
     images: [
       '/imgs/qarabag/malibeyli/1.jpg',
       '/imgs/qarabag/malibeyli/2.jpg',
@@ -812,7 +927,7 @@ const pinpoints = ref([
     x: 50,  // Kəlbəcər area
     y: 45,  
     region: 'qarabag',
-    name: 'Kəlbəcər Şəhər Y/S',
+    name: 'KƏLBƏCƏR ŞƏHƏR YS',
     images: [
       '/imgs/qarabag/kelbecer-seher-ys/1.jpg',
       '/imgs/qarabag/kelbecer-seher-ys/2.jpg',
@@ -824,7 +939,7 @@ const pinpoints = ref([
     x: 45,  // Xocavənd Zoğalbulaq area
     y: 50,  
     region: 'qarabag',
-    name: 'Xocavənd Zoğalbulaq Y/S',
+    name: 'XOCAVƏND ZOĞALBULAQ YS',
     images: [
       '/imgs/qarabag/xocavend-zogalbulaq-ys/1.jpg',
       '/imgs/qarabag/xocavend-zogalbulaq-ys/2.jpg',
@@ -836,7 +951,7 @@ const pinpoints = ref([
     x: 60,  // Xocavənd 35kv area
     y: 45,  
     region: 'qarabag',
-    name: 'Xocavənd 35kv',
+    name: 'XOCAVƏND YS',
     images: [
       '/imgs/qarabag/xocavend-35kv/1.jpg',
       '/imgs/qarabag/xocavend-35kv/2.jpg',
@@ -848,7 +963,7 @@ const pinpoints = ref([
     x: 65,  // Xankəndi area
     y: 60,  
     region: 'qarabag',
-    name: 'Xankəndi',
+    name: 'XANKƏNDİ YS',
     images: [
       '/imgs/qarabag/xankendi/1.jpg',
       '/imgs/qarabag/xankendi/2.jpg',
@@ -1407,8 +1522,8 @@ const getRegionSubstations = (region) => {
       { name: 'XAÇMAZ EŞ', specs: '110 / 35 / 10' },
     ],
     'sirvan': [
-      { name: 'ŞİRVAN EŞ', specs: '110 / 35 / 10' },
-      { name: 'KÜRDƏMİR YS', specs: '110 / 35 / 10' },
+    { name: 'KÜRDƏMİR YS', specs: '110 / 35 / 10' },
+    { name: 'KÜRDƏMİR EŞ', specs: '110 / 35 / 10' },
     ],
     'qerb': [
       { name: 'GƏNCƏ EŞ', specs: '110 / 35 / 10' },
@@ -1417,57 +1532,36 @@ const getRegionSubstations = (region) => {
       { name: 'GÖYGÖL YS', specs: '110 / 35 / 10' }
     ],
     'simalqerb': [
-      { name: 'QƏBƏLƏ EŞ', specs: '110 / 35 / 10' },
-      { name: 'İSMIYİLLI EŞ', specs: '110 / 35 / 10' },
-      { name: 'QAX EŞ', specs: '110 / 35 / 10' },
-      { name: 'ŞƏKİ EŞ', specs: '110 / 35 / 10' },
-      { name: 'BALAKƏN EŞ', specs: '110 / 35 / 10' },
-      { name: 'OĞUZ EŞ', specs: '110 / 35 / 10' },
-      { name: 'ŞAMAXI EŞ', specs: '110 / 35 / 10' },
-      { name: 'ZAQATALA EŞ', specs: '110 / 35 / 10' }
+      
     ],
     'merkezi-aran': [
       { name: 'AĞDAŞ EŞ', specs: '110 / 35 / 10' },
-      { name: 'NAFTALAN EŞ', specs: '110 / 35 / 10' },
-      { name: 'YEVLAX EŞ', specs: '110 / 35 / 10' },
-      { name: 'GORANBOY EŞ', specs: '110 / 35 / 10' },
-      { name: 'GÖYÇAY EŞ', specs: '110 / 35 / 10' },
-      { name: 'UCAR EŞ', specs: '110 / 35 / 10' },
-      { name: 'MİNGƏÇEVİR EŞ', specs: '110 / 35 / 10' }
+      { name: 'MİNGƏÇEVİR KARXANA YS', specs: '110 / 35 / 10' },
+    
     ],
     'aran': [
       { name: 'AĞDAM EŞ', specs: '110 / 35 / 10' },
-      { name: 'AĞCABƏDİ EŞ', specs: '110 / 35 / 10' },
-      { name: 'TƏRTƏR EŞ', specs: '110 / 35 / 10' },
-      { name: 'BƏRDƏ EŞ', specs: '110 / 35 / 10' },
-      { name: 'BEYLƏQAN EŞ', specs: '110 / 35 / 10' },
+      { name: 'BƏRDƏ ŞİRVANLI YS', specs: '110 / 35 / 10' },
+      { name: 'BƏRDƏ SƏMƏD VURĞUN YS', specs: '110 / 35 / 10' },
       { name: 'ZƏRDAB EŞ', specs: '110 / 35 / 10' },
-      { name: 'FÜZULİ EŞ', specs: '110 / 35 / 10' },
-      { name: 'İMİŞLİ EŞ', specs: '110 / 35 / 10' }
+      { name: 'FİZULİ MAHMUDLU YS', specs: '110 / 35 / 10' },
     ],
     'cenub': [
-      { name: 'ASTARA EŞ', specs: '110 / 35 / 10' },
-      { name: 'BİLƏSUVAR EŞ', specs: '110 / 35 / 10' },
-      { name: 'MASALLI EŞ', specs: '110 / 35 / 10' },
-      { name: 'YARDIMLI EŞ', specs: '110 / 35 / 10' },
-      { name: 'CƏLİLABAD EŞ', specs: '110 / 35 / 10' },
       { name: 'LƏNKƏRAN EŞ', specs: '110 / 35 / 10' },
-      { name: 'LERİK EŞ', specs: '110 / 35 / 10' }
     ],
     'qarabag': [
-      { name: 'Zəfər YS', specs: '110 / 35 / 10' },
+      { name: 'ZƏFƏR YS', specs: '110 / 35 / 10' },
       { name: 'XANKƏNDİ YS', specs: '110 / 35 / 10' },
-      { name: 'XOCALI Əsgəran YS', specs: '110 / 35 / 10' },
-      { name: 'Xocavənd 35 YS', specs: '110 / 35 / 10' },
-      { name: 'Zoğalbulaq YS', specs: '110 / 35 / 10' },
-      { name: 'Kəlbəcər YS', specs: '110 / 35 / 10' },
+      { name: 'XOCALI ƏSGƏRAN YS', specs: '110 / 35 / 10' },
+      { name: 'XOCAVƏND 35KV YS', specs: '110 / 35 / 10' },
+      { name: 'ZOĞALBULAQ YS', specs: '110 / 35 / 10' },
+      { name: 'KƏLBƏCƏR ŞƏHƏR YS', specs: '110 / 35 / 10' },
       { name: 'LAÇIN MİNKƏND YS', specs: '110 / 35 / 10' },
-      { name: 'MALİBƏYLI YS', specs: '110 / 35 / 10' },
+      { name: 'MALIBƏYLI YS', specs: '110 / 35 / 10' },
       { name: 'SIĞNAQ YS', specs: '110 / 35 / 10' }
     ],
     'naxcivan': [
-      { name: 'Naxçıvan EŞ', specs: '110 / 35 / 10' },
-      { name: 'Şərur EŞ', specs: '110 / 35 / 10' }
+     
     ]
   }
   return substationData[region] || []
