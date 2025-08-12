@@ -775,6 +775,30 @@ const pinpoints = ref([
     ]
   },
   { 
+    id: 'aran-6', 
+    x: 70,  // Sitalçay area
+    y: 10,  
+    region: 'aran',
+    name: 'KÜRDƏMİR YS',
+    images: [
+      '/imgs/sirvan/kurdemir-ys/1.jpg',
+      '/imgs/sirvan/kurdemir-ys/2.jpg',
+      '/imgs/sirvan/kurdemir-ys/3.jpg'
+    ]
+  },
+  { 
+    id: 'aran-7', 
+    x: 75,  // Sitalçay area
+    y: 6,  
+    region: 'aran',
+    name: 'KÜRDƏMİR EŞ',
+    images: [
+      '/imgs/sirvan/kurdemir-es/1.jpg',
+      '/imgs/sirvan/kurdemir-es/2.jpg',
+      '/imgs/sirvan/kurdemir-es/3.jpg'
+    ]
+  },
+  { 
     id: 'aran-2', 
     x: 20,  // Xaçmaz center
     y: 7,  
@@ -862,30 +886,7 @@ const pinpoints = ref([
       '/imgs/qerb/goygol-ys/3.jpg'
     ]
   },
-  { 
-    id: 'sirvan-1', 
-    x: 15,  // Sitalçay area
-    y: 10,  
-    region: 'sirvan',
-    name: 'KÜRDƏMİR YS',
-    images: [
-      '/imgs/sirvan/kurdemir-ys/1.jpg',
-      '/imgs/sirvan/kurdemir-ys/2.jpg',
-      '/imgs/sirvan/kurdemir-ys/3.jpg'
-    ]
-  },
-  { 
-    id: 'sirvan-2', 
-    x: 14,  // Sitalçay area
-    y: 10,  
-    region: 'sirvan',
-    name: 'KÜRDƏMİR EŞ',
-    images: [
-      '/imgs/sirvan/kurdemir-es/1.jpg',
-      '/imgs/sirvan/kurdemir-es/2.jpg',
-      '/imgs/sirvan/kurdemir-es/3.jpg'
-    ]
-  },
+ 
   { 
     id: 'qerb-3', 
     x: 55,  // Gəncə area
@@ -913,8 +914,8 @@ const pinpoints = ref([
   // Qarabag Region Pinpoints - Google Map Coordinates
   { 
     id: 'qarabag-1', 
-    x: 30,  // Xocalı area
-    y: 40,  
+    x: 48,  // Xocalı area
+    y: 28,  
     region: 'qarabag',
     name: 'XOCALI ƏSGƏRAN YS',
     images: [
@@ -925,8 +926,8 @@ const pinpoints = ref([
   },
   { 
     id: 'qarabag-2', 
-    x: 35,  // Zəfər area
-    y: 35,  
+    x: 60,  // Zəfər area
+    y: 55,  
     region: 'qarabag',
     name: 'ZƏFƏR YS',
     images: [
@@ -949,8 +950,8 @@ const pinpoints = ref([
   },
   { 
     id: 'qarabag-4', 
-    x: 32,  // Malıbəyli area
-    y: 28,  
+    x: 40,  // Malıbəyli area
+    y: 50,  
     region: 'qarabag',
     name: 'MALIBƏYLİ YS',
     images: [
@@ -961,8 +962,8 @@ const pinpoints = ref([
   },
   { 
     id: 'qarabag-5', 
-    x: 50,  // Kəlbəcər area
-    y: 45,  
+    x: 23,  // Kəlbəcər area
+    y: 16,  
     region: 'qarabag',
     name: 'KƏLBƏCƏR ŞƏHƏR YS',
     images: [
@@ -973,10 +974,10 @@ const pinpoints = ref([
   },
   { 
     id: 'qarabag-6', 
-    x: 45,  // Xocavənd Zoğalbulaq area
-    y: 50,  
+    x: 65,  // Xocavənd Zoğalbulaq area
+    y: 40,  
     region: 'qarabag',
-    name: 'XOCAVƏND ZOĞALBULAQ YS',
+    name: 'ZOĞALBULAQ YS',
     images: [
       '/imgs/qarabag/xocavend-zogalbulaq-ys/1.jpg',
       '/imgs/qarabag/xocavend-zogalbulaq-ys/2.jpg',
@@ -986,7 +987,7 @@ const pinpoints = ref([
   { 
     id: 'qarabag-7', 
     x: 60,  // Xocavənd 35kv area
-    y: 45,  
+    y: 40,  
     region: 'qarabag',
     name: 'XOCAVƏND YS',
     images: [
@@ -997,14 +998,26 @@ const pinpoints = ref([
   },
   { 
     id: 'qarabag-8', 
-    x: 65,  // Xankəndi area
-    y: 60,  
+    x: 45,  // Xankəndi area
+    y: 40,  
     region: 'qarabag',
     name: 'XANKƏNDİ YS',
     images: [
       '/imgs/qarabag/xankendi/1.jpg',
       '/imgs/qarabag/xankendi/2.jpg',
       '/imgs/qarabag/xankendi/3.jpg'
+    ]
+  },
+  { 
+    id: 'qarabag-9', 
+    x: 35,  // Xankəndi area
+    y: 50,  
+    region: 'qarabag',
+    name: 'LAÇIN MİNKƏND YS',
+    images: [
+      '/imgs/qarabag/lacin-minkend-ys/1.jpg',
+      '/imgs/qarabag/lacin-minkend-ys/2.jpg',
+      '/imgs/qarabag/lacin-minkend-ys/3.jpg'
     ]
   }
 ])
