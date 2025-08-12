@@ -304,11 +304,13 @@
                          top: pinpoint.y + '%',
                          transform: `translate(-50%, -50%) scale(${1 / mapZoomTransform.scale})`,
                          pointerEvents: mapZoomTransform.scale >= 1 ? 'auto' : 'none'
-                       }"
-                       @click.stop="handlePinPointClick(pinpoint)">
-                    <img src="/icons/pinpoint.svg" 
-                         alt="Yarımstansiya" 
-                         class="pinpoint-icon" />
+                       }">
+                    <!-- Create precise clickable area that matches the pin shape -->
+                    <div class="pinpoint-clickable-area" @click.stop="handlePinPointClick(pinpoint)">
+                      <img src="/icons/pinpoint.svg" 
+                           alt="Yarımstansiya" 
+                           class="pinpoint-icon" />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -2707,21 +2709,34 @@ onMounted(() => {
 /* Pinpoint Styles */
 .pinpoint-overlay {
   position: absolute;
-  cursor: pointer;
   z-index: 10;
   opacity: 0;
   animation: pinpointFadeIn 0.2s ease 0.2s forwards;
   transition: transform 0.1s ease-out;
+  /* Remove pointer events from the outer container */
+  pointer-events: none;
 }
 
-.pinpoint-overlay.pinpoint-clickable {
+.pinpoint-overlay.pinpoint-clickable .pinpoint-clickable-area {
   cursor: pointer;
   filter: drop-shadow(0 2px 8px rgba(49, 177, 240, 0.3));
 }
 
 .pinpoint-overlay:not(.pinpoint-clickable) {
-  cursor: default;
   opacity: 0.6;
+}
+
+.pinpoint-overlay:not(.pinpoint-clickable) .pinpoint-clickable-area {
+  cursor: default;
+}
+
+/* Precise clickable area that matches the pin shape */
+.pinpoint-clickable-area {
+  position: relative;
+  pointer-events: auto;
+  /* Create a more precise hit area using clip-path to match the pin head */
+  clip-path: ellipse(50% 40% at 50% 35%);
+  /* Alternative circular area: clip-path: circle(45% at 50% 40%); */
 }
 
 @keyframes pinpointFadeIn {
