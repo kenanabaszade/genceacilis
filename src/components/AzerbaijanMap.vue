@@ -594,6 +594,45 @@ const isMapDragging = ref(false)
 const dragStartPos = ref({ x: 0, y: 0 })
 const dragStartTransform = ref({ translateX: 0, translateY: 0 })
 
+// Map boundary constraints
+const getMapBounds = () => {
+  if (!mapContainer.value) return { minX: 0, maxX: 0, minY: 0, maxY: 0 }
+  
+  const containerRect = mapContainer.value.getBoundingClientRect()
+  const containerWidth = containerRect.width
+  const containerHeight = containerRect.height
+  
+  // Assuming standard Google Maps image dimensions (can be adjusted)
+  const imageWidth = containerWidth  // Image fills container width initially
+  const imageHeight = containerHeight // Image fills container height initially
+  
+  const { scale } = mapZoomTransform.value
+  
+  // Calculate how much the scaled image exceeds the container
+  const scaledImageWidth = imageWidth * scale
+  const scaledImageHeight = imageHeight * scale
+  
+  // Calculate maximum translation to keep image within bounds
+  const maxTranslateX = Math.max(0, (scaledImageWidth - containerWidth) / 2)
+  const maxTranslateY = Math.max(0, (scaledImageHeight - containerHeight) / 2)
+  
+  return {
+    minX: -maxTranslateX,
+    maxX: maxTranslateX,
+    minY: -maxTranslateY,
+    maxY: maxTranslateY
+  }
+}
+
+const constrainTransform = (translateX, translateY) => {
+  const bounds = getMapBounds()
+  
+  return {
+    translateX: Math.max(bounds.minX, Math.min(bounds.maxX, translateX)),
+    translateY: Math.max(bounds.minY, Math.min(bounds.maxY, translateY))
+  }
+}
+
 // Yarimstansiya pinpoints data - EASY TO EDIT
 // Coordinates are relative to individual region SVG maps (not main map)
 const pinpoints = ref([
@@ -1107,18 +1146,38 @@ const toggleZoom = () => {
 // Google Map zoom functions
 const zoomInMap = () => {
   const newScale = Math.min(mapZoomTransform.value.scale * 1.5, 5)
+  
+  // Temporarily update scale to calculate bounds
+  const tempTransform = { ...mapZoomTransform.value, scale: newScale }
+  const originalTransform = mapZoomTransform.value
+  mapZoomTransform.value = tempTransform
+  
+  // Apply boundary constraints with the new scale
+  const constrained = constrainTransform(originalTransform.translateX, originalTransform.translateY)
+  
   mapZoomTransform.value = {
-    ...mapZoomTransform.value,
     scale: newScale,
+    translateX: constrained.translateX,
+    translateY: constrained.translateY,
     transition: 'transform 0.3s ease-out'
   }
 }
 
 const zoomOutMap = () => {
   const newScale = Math.max(mapZoomTransform.value.scale / 1.5, 1)
+  
+  // Temporarily update scale to calculate bounds
+  const tempTransform = { ...mapZoomTransform.value, scale: newScale }
+  const originalTransform = mapZoomTransform.value
+  mapZoomTransform.value = tempTransform
+  
+  // Apply boundary constraints with the new scale
+  const constrained = constrainTransform(originalTransform.translateX, originalTransform.translateY)
+  
   mapZoomTransform.value = {
-    ...mapZoomTransform.value,
     scale: newScale,
+    translateX: constrained.translateX,
+    translateY: constrained.translateY,
     transition: 'transform 0.3s ease-out'
   }
 }
@@ -1128,9 +1187,18 @@ const handleMapWheel = (event) => {
   const delta = event.deltaY > 0 ? 0.9 : 1.1
   const newScale = Math.max(1, Math.min(5, mapZoomTransform.value.scale * delta))
   
+  // Temporarily update scale to calculate bounds
+  const tempTransform = { ...mapZoomTransform.value, scale: newScale }
+  const originalTransform = mapZoomTransform.value
+  mapZoomTransform.value = tempTransform
+  
+  // Apply boundary constraints with the new scale
+  const constrained = constrainTransform(originalTransform.translateX, originalTransform.translateY)
+  
   mapZoomTransform.value = {
-    ...mapZoomTransform.value,
     scale: newScale,
+    translateX: constrained.translateX,
+    translateY: constrained.translateY,
     transition: 'transform 0.1s ease-out'
   }
 }
@@ -1181,9 +1249,18 @@ const handleTouchMove = (event) => {
     const scaleFactor = currentDistance / touchStartDistance.value
     const newScale = Math.max(1, Math.min(5, mapZoomTransform.value.scale * scaleFactor))
     
+    // Temporarily update scale to calculate bounds
+    const tempTransform = { ...mapZoomTransform.value, scale: newScale }
+    const originalTransform = mapZoomTransform.value
+    mapZoomTransform.value = tempTransform
+    
+    // Apply boundary constraints with the new scale
+    const constrained = constrainTransform(originalTransform.translateX, originalTransform.translateY)
+    
     mapZoomTransform.value = {
-      ...mapZoomTransform.value,
       scale: newScale,
+      translateX: constrained.translateX,
+      translateY: constrained.translateY,
       transition: 'none'
     }
   } else if (event.touches.length === 1 && isMapDragging.value && mapZoomTransform.value.scale > 1) {
@@ -1193,10 +1270,16 @@ const handleTouchMove = (event) => {
     const deltaX = event.touches[0].clientX - dragStartPos.value.x
     const deltaY = event.touches[0].clientY - dragStartPos.value.y
     
+    const newTranslateX = dragStartTransform.value.translateX + deltaX
+    const newTranslateY = dragStartTransform.value.translateY + deltaY
+    
+    // Apply boundary constraints
+    const constrained = constrainTransform(newTranslateX, newTranslateY)
+    
     mapZoomTransform.value = {
       ...mapZoomTransform.value,
-      translateX: dragStartTransform.value.translateX + deltaX,
-      translateY: dragStartTransform.value.translateY + deltaY
+      translateX: constrained.translateX,
+      translateY: constrained.translateY
     }
   }
 }
@@ -1237,10 +1320,16 @@ const handleMapMouseMove = (event) => {
     const deltaX = event.clientX - dragStartPos.value.x
     const deltaY = event.clientY - dragStartPos.value.y
     
+    const newTranslateX = dragStartTransform.value.translateX + deltaX
+    const newTranslateY = dragStartTransform.value.translateY + deltaY
+    
+    // Apply boundary constraints
+    const constrained = constrainTransform(newTranslateX, newTranslateY)
+    
     mapZoomTransform.value = {
       ...mapZoomTransform.value,
-      translateX: dragStartTransform.value.translateX + deltaX,
-      translateY: dragStartTransform.value.translateY + deltaY
+      translateX: constrained.translateX,
+      translateY: constrained.translateY
     }
   }
 }
