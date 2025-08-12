@@ -1622,8 +1622,7 @@ const getRegionSubstations = (region) => {
       { name: 'XAÇMAZ EŞ', specs: '110 / 35 / 10' },
     ],
     'sirvan': [
-    { name: 'KÜRDƏMİR YS', specs: '110 / 35 / 10' },
-    { name: 'KÜRDƏMİR EŞ', specs: '110 / 35 / 10' },
+   
     ],
     'qerb': [
       { name: 'GƏNCƏ EŞ', specs: '110 / 35 / 10' },
@@ -1643,6 +1642,8 @@ const getRegionSubstations = (region) => {
       { name: 'AĞDAM EŞ', specs: '110 / 35 / 10' },
       { name: 'BƏRDƏ ŞİRVANLI YS', specs: '110 / 35 / 10' },
       { name: 'BƏRDƏ SƏMƏD VURĞUN YS', specs: '110 / 35 / 10' },
+      { name: 'KÜRDƏMİR YS', specs: '110 / 35 / 10' },
+      { name: 'KÜRDƏMİR EŞ', specs: '110 / 35 / 10' },
       { name: 'ZƏRDAB EŞ', specs: '110 / 35 / 10' },
       { name: 'FİZULİ MAHMUDLU YS', specs: '110 / 35 / 10' },
     ],
@@ -1717,11 +1718,11 @@ const fetchData = async () => {
           { name: "Bakı RETSİ", count: 6 },
           { name: "Sumqayıt RETSİ", count: 1 },
           { name: "Xaçmaz RETSİ", count: 1 },
-          { name: "Şirvan RETSİ", count: 2 },
+          { name: "Şirvan RETSİ", count: 0 },
           { name: "Şimal Qərb RETSİ", count: 0 },
           { name: "Qərb RETSİ", count: 4 },
           { name: "Mərkəzi Aran RETSİ", count: 2 },
-          { name: "Aran RETSİ", count: 5 },
+          { name: "Aran RETSİ", count: 7 },
           { name: "Qarabağ RETSİ", count: 9 },
           { name: "Naxçıvan RETSİ", count: 0 },
           { name: "Cənub RETSİ", count: 1 }
